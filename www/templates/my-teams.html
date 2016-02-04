@@ -1,0 +1,10 @@
+<ion-view view-title="My teams">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="server in servers" type="item-text-wrap" ng-click="configure(server)">
+                <ion-option-button ng-click='dropTeam(server)' class="button-assertive icon ion-trash-a"></ion-option-button>
+                {{server.callName}} ({{server.user}})
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

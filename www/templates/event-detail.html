@@ -1,0 +1,38 @@
+<ion-view>
+<ion-nav-title>{{event.caption}}</ion-nav-title>
+<ion-content>
+<div class="button-bar">
+  <button id='{{type.code}}' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
+</div>
+
+  <label class="item item-input">
+    <i class="icon ion-compose placeholder-icon"></i>
+    <input type="text" placeholder="Poznámka k účasti" ng-model='userAttendance.preDescription'>
+  </label>
+
+
+<div class="card">
+   <div class="item item-divider">
+      {{event.caption}}
+   </div>
+   <div class="item item-text-wrap" ng-bind-html="renderHtml(event.description)"></div>
+   <div class="item item-divider">
+      start: {{event.startTime|date:'HH:mm, dd.MM.yyyy'}} <br />
+      konec: {{event.startTime|date:'HH:mm, dd.MM.yyyy'}}
+   </div>
+</div>
+
+<div ng-repeat="status in event.eventType.preStatusSet">
+<div class="card">
+   <div class="item item-divider">
+       {{status.caption}}
+   </div>
+   <div class="item item-text-wrap">
+      <p ng-repeat="user in attendance[status.code]">
+      {{user.callName}} <span ng-show="user.preDescription.length > 0">({{user.preDescription}})</span>
+      </p>
+   </div>
+</div>
+</div>
+</ion-content>
+</ion-view>

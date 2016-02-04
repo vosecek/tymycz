@@ -1,0 +1,55 @@
+<ion-side-menus enable-menu-with-back-views="true">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+            <ion-nav-buttons side="right">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="right">
+                </button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="menuContent">
+        </ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="right">
+        <ion-header-bar class="bar-stable">
+            <h1 class="title">
+                {{data.serverCallName}}
+            </h1>
+        </ion-header-bar>
+        <ion-content>
+            <ion-list>
+                <ion-item class='item-icon-left' menu-close href="#/menu/dashboard">
+                <i class="icon ion-home"></i>
+                    Dashboard
+                </ion-item>
+                <ion-item class='item-icon-left' menu-close href="#/menu/discussions">
+                <i class="icon ion-chatboxes"></i>
+                    Diskuze
+                </ion-item>
+                <ion-item class='item-icon-left' menu-close href="#/menu/events">
+                <i class="icon ion-android-calendar"></i>
+                    Udalosti
+                </ion-item>
+                <div class="card">
+                    <div class="item item-divider">
+                        {{data.callName}}
+                    </div>
+                    <div class="item item-text-wrap">
+                        <img ng-src="{{data.pictureUrl}}" />
+                    </div>
+                    <div class="item item-divider">
+                        Last: {{data.lastLogin|date:'HH:mm, dd.MM.yyyy'}}
+                    </div>
+                </div>
+            </ion-list>
+            <ion-list>
+                <ion-item ng-repeat="server in servers" type="item-text-wrap" ng-click="switch(server)">
+                    <h2 ng-class="setClass(server)">{{server.callName}} ({{server.user}})</h2>
+                </ion-item>
+            </ion-list>
+            <a class="button button-block button-small button-calm icon-left ion-gear-a" menu-close href="#/menu/my-teams">Configure teams</a>
+            <button class="button button-full button-assertive icon-left ion-log-out" menu-close ng-click="logout()">Log out</button>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

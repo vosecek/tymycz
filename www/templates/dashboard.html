@@ -1,0 +1,40 @@
+<ion-view view-title="Přehled">
+    <ion-content>
+    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+    </ion-refresher>
+        <div class="list card">
+            <div class="item item-divider">
+                Diskuze s novými komentáři
+            </div>
+            <ion-list>
+                <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/menu/discussions/{{discussion.id}}">
+                    <small>
+                        {{discussion.caption}} <span ng-if="discussion.newPosts>0" class="badge badge-assertive">{{discussion.newPosts}}</span>
+                    </small>
+                </ion-item>
+            </ion-list>
+            <div class="item item-divider">
+                <button class='button button-calm button-full' ng-click="go('menu.discussions')">
+                    Všechny diskuze
+                </button>
+            </div>
+        </div>
+        <div class="list card">
+            <div class="item item-divider">
+                Nejbližší akce
+            </div>
+            <ion-list>
+                <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}|limitTo:3" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+                    <small>
+                        {{event.caption}} {{event.startTime | date:"dd.MM.yyyy"}}
+                    </small>
+                </ion-item>
+            </ion-list>
+            <div class="item item-divider">
+                <button class='button button-positive button-full' ng-click="go('menu.events')">
+                    Všechny události
+                </button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
