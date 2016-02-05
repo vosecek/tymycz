@@ -24,9 +24,11 @@
                 Nejbližší akce
             </div>
             <ion-list>
-                <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}|limitTo:3" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+                <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+                    <ion-option-button ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event.id}})' ng-class="setAttendanceButton(status)" class="icon icon-left">{{status.caption}}</ion-option-button>
                     <small>
                         {{event.caption}} {{event.startTime | date:"dd.MM.yyyy"}}
+                        <span ng-if="event.userAttendance.caption" class="badge" ng-class="setAttendanceBadge({{event.userAttendance}})">{{event.userAttendance.caption}}</span>
                     </small>
                 </ion-item>
             </ion-list>

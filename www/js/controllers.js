@@ -3,6 +3,15 @@ String.prototype.stripSlashes = function() {
 };
 angular.module('tymy.controllers', [])
   .controller('LoginCtrl', function($scope, md5, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
+    $scope.$on('$ionicView.loaded', function() {
+      $scope.$storage = $localStorage.servers;
+      var record = $filter('filter')($scope.$storage, {
+        autoLogin: true
+      }, true);
+      if (record.length > 0) {
+        $scope.send(record[0]);
+      }
+    });
 
     $scope.data = {
       server: "",
@@ -24,7 +33,6 @@ angular.module('tymy.controllers', [])
         template: "Login in progress ...",
       });
 
-      TS.Server.oldUrl = false;
       TS.Server.TSID = false;
 
       if (loginData === false) {
@@ -41,11 +49,7 @@ angular.module('tymy.controllers', [])
           password: TS.Server.password,
         };
       } else {
-        TS.Server.callName = loginData.callName;
-        TS.Server.code = loginData.code;
-        TS.Server.url = loginData.url;
-        TS.Server.user = loginData.user;
-        TS.Server.password = loginData.password;
+        TS.Server.setTeam(loginData);
       }
 
       ServerLogin.get(loginData, function(data) {
@@ -53,15 +57,15 @@ angular.module('tymy.controllers', [])
           loginData.url = loginData.url;
           if ($scope.data.saveAccess === true) {
             $scope.$storage = $localStorage;
-            if (angular.isUndefined($scope.$storage.servers)) {
-              $scope.$storage.servers = [];
+            if (angular.isUndefined($scope.$storage)) {
+              $scope.$storage = [];
             }
-            var record = $filter('filter')($scope.$storage.servers, {
+            var record = $filter('filter')($scope.$storage, {
               url: loginData.url
             }, true);
 
             if (record.length === 0) {
-              $scope.$storage.servers.push(loginData);
+              $scope.$storage.push(loginData);
               $ionicLoading.show({
                 template: "Nový tým uložen, v nastavení týmů můžeš provést další úpravy"
               });
@@ -69,7 +73,7 @@ angular.module('tymy.controllers', [])
             }
           }
 
-          data.data.pictureUrl = "http://" + TS.Server.url + data.data.pictureUrl;
+          data.data.pictureUrl = TS.Server.fullUrl() + data.data.pictureUrl;
           TS.User = data.data;
           TS.Server.TSID = data.sessionKey;
           if (newTeam === true) {
@@ -94,21 +98,14 @@ angular.module('tymy.controllers', [])
     };
   })
   .controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $localStorage, $ionicModal) {
-    $scope.ServerUrl = TS.Server.url;
-    $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.doRefresh();
-      }
-    });
+    $scope.$storage = $localStorage.servers;
 
     $scope.dropTeam = function(server) {
-      $scope.$storage = $localStorage;
-      var record = $filter('filter')($scope.$storage.servers, {
+      var record = $filter('filter')($scope.$storage, {
         url: server.url
       }, true);
-      var index = $scope.$storage.servers.indexOf(record[0]);
-      $scope.$storage.servers.splice(index, 1);
+      var index = $scope.$storage.indexOf(record[0]);
+      $scope.$storage.splice(index, 1);
       $scope.closeModal();
       $ionicLoading.show({
         template: "Team removed",
@@ -137,11 +134,24 @@ angular.module('tymy.controllers', [])
         template: "Data updated",
         duration: 2000
       });
-      var record = $filter('filter')($localStorage.servers, {
+      var record = $filter('filter')($scope.$storage, {
         url: $scope.data.url
       }, true);
       record[0].callName = $scope.data.callName;
       record[0].user = $scope.data.user;
+
+      if ($scope.data.autoLogin === true) {
+        angular.forEach($scope.$storage, function(obj) {
+          if (obj.autoLogin === true) {
+            $ionicLoading.show({
+              template: "Auto login zrusen u tymu: " + obj.callName,
+              duration: 2000
+            });
+          }
+          obj.autoLogin = false;
+        });
+      }
+      record[0].autoLogin = $scope.data.autoLogin;
       if ($scope.data.password.length > 0) {
         record[0].password = md5.createHash($scope.data.password);
       }
@@ -175,21 +185,21 @@ angular.module('tymy.controllers', [])
     };
 
     $scope.logout = function() {
-
       $ionicLoading.show({
         template: "Logging out"
       });
       $timeout(function() {
-        $state.go('login');
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+        $state.go('login', {}, {
+          reload: true
+        });
         $ionicLoading.hide();
-      }, 1000);
+      }, 100);
     };
 
     $scope.switch = function(team) {
-      TS.Server.oldUrl = TS.Server.url;
-      TS.Server.url = team.url;
-      TS.Server.user = team.user;
-      TS.Server.password = team.password;
+      TS.Server.setTeam(team);
       TS.Server.TSID = false;
       $scope.data.saveAccess = false;
 
@@ -203,52 +213,64 @@ angular.module('tymy.controllers', [])
         password: TS.Server.password
       };
 
-
       ServerLogin.get(loginData, function(data) {
-        if (data.status == "OK") {
-          data.data.pictureUrl = "http://" + TS.Server.url + data.data.pictureUrl;
-          TS.User = data.data;
-          TS.Server.TSID = data.sessionKey;
-          $ionicLoading.hide();
-          ListView.clearAll();
+          if (data.status == "OK") {
+            data.data.pictureUrl = TS.Server.fullUrl() + data.data.pictureUrl;
+            TS.User = data.data;
+            TS.Server.TSID = data.sessionKey;
+            ListView.clearAll();
 
-          $ionicHistory.nextViewOptions({
-            disableBack: true
-          });
-          $state.go('menu.dashboard', {}, {
-            reload: true
-          });
-          $ionicSideMenuDelegate.toggleRight();
-          $ionicHistory.clearHistory();
-          $ionicHistory.clearCache();
-        } else {
-          $ionicLoading.show({
-            template: data.statusMessage,
-            duration: 2000
-          });
+            $timeout(function() {
+              $ionicHistory.clearCache();
+              $ionicHistory.nextViewOptions({
+                disableBack: true
+              });
+              $state.go('menu.dashboard', {}, {
+                reload: true
+              });
+              $ionicLoading.hide();
+
+              $ionicSideMenuDelegate.toggleRight();
+            }, 500);
+          } else {
+            $ionicLoading.show({
+              template: data.statusMessage,
+              duration: 2000
+            });
+            $state.go('login');
+          }
+        },
+        function(error) {
           $state.go('login');
-        }
-      }, function(error) {
-        $state.go('login');
-        $ionicLoading.hide();
-      });
+          $ionicLoading.hide();
+        });
     };
   })
-  .controller('DashboardCtrl', function($scope, $ionicHistory, $state, ListView, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
-    $scope.ServerUrl = TS.Server.url;
-
+  .controller('DashboardCtrl', function($scope, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
     $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.doRefresh();
-      }
+      $scope.doRefresh();
     });
-
     $scope.go = function(target) {
       $ionicHistory.nextViewOptions({
         disableBack: true
       });
       $state.go(target);
+    };
+
+    $scope.setAttendance = function(code, eventId) {
+      var data = [{
+        userId: TS.User.id,
+        eventId: eventId,
+        preStatus: code,
+      }];
+
+      ServerAPI.http(ServerAttendance, function(data) {
+        $ionicLoading.show({
+          template: "Účast aktualizována",
+          duration: 500
+        });
+        $scope.doRefresh();
+      }, angular.toJson(data));
     };
 
     $scope.newPosts = function(p) {
@@ -290,8 +312,70 @@ angular.module('tymy.controllers', [])
           ListView.add(events, data.data[i]);
         }
 
-        $scope.events = ListView.all(events);
+        $scope.events = [];
+        var inFuture = ListView.all(events)
+          .filter(function(el) {
+            if (el.inFuture === true) {
+              return true;
+            }
+          });
+        data = inFuture.reverse();
+        var limit = 5;
+        for (i in inFuture) {
+          if (i == limit) break;
+          ServerAPI.get(ServerEventDetail, function(data) {
+            event = data.data;
+            console.log(event);
+            event.userAttendance = ServerAPI.userAttendanceOnEvent(event);
+            event.userAttendance = $scope.detectUserAttendance(event, event.userAttendance.preStatus);
+
+            $scope.events.push(event);
+            $scope.events.sort(function(a, b) {
+              return (a.startTime < b.startTime ? 1 : -1);
+            });
+          }, {
+            eventId: data[i].id
+          });
+        }
       });
+    };
+
+    $scope.setAttendanceButton = function(status) {
+      if (status.code == "YES") {
+        return "ion-ios-checkmark button-balanced";
+      }
+      if (status.code == "NO") {
+        return "ion-ios-close button-assertive";
+      }
+      if (status.code == "LAT") {
+        return "ion-ios-timer button-royal";
+      }
+      if (status.code == "DKY") {
+        return "ion-ios-help button-calm";
+      }
+    };
+
+    $scope.setAttendanceBadge = function(status) {
+      console.log(status);
+      if (status.code == "YES") {
+        return "badge-balanced";
+      }
+      if (status.code == "NO") {
+        return "badge-assertive";
+      }
+      if (status.code == "LAT") {
+        return "badge-royal";
+      }
+      if (status.code == "DKY") {
+        return "badge-calm";
+      }
+    };
+
+    $scope.detectUserAttendance = function(event, code) {
+      var record = event.eventType.preStatusSet.filter(function(el) {
+        if (el.code == code) return true;
+      });
+      return record[0];
     };
 
     $scope.doRefresh = function() {
@@ -299,16 +383,10 @@ angular.module('tymy.controllers', [])
       $scope.refreshDiscussions();
       $scope.$broadcast('scroll.refreshComplete');
     };
-
-    $scope.doRefresh();
   })
   .controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, ServerAPI, $ionicLoading) {
-    $scope.ServerUrl = TS.Server.url;
     $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.doRefresh();
-      }
+      $scope.refresh();
     });
 
     var master = "discussions";
@@ -335,33 +413,22 @@ angular.module('tymy.controllers', [])
         $scope.discussions = ListView.all(master);
       });
     };
-
-    $scope.refresh();
-
-
   })
   .controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, $ionicLoading) {
-    $scope.ServerUrl = TS.Server.url;
-    $scope.switch = function(show) {
-      $scope.show = show;
-      var newData = [];
-      $scope.backupEvents.filter(function(el) {
-        if (el[show] === true) {
-          newData.push(el);
-        }
-      });
-      $ionicLoading.show({
-        template: '<ion-spinner icon="circles"></ion-spinner>',
-        duration: 250
-      });
-      $scope.events = newData;
-    };
     $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.doRefresh();
-      }
+      $scope.refresh();
     });
+    $scope.switch = function(show, silent) {
+      silent = silent || false;
+      $scope.show = show;
+      if (silent === false) {
+        $ionicLoading.show({
+          template: '<ion-spinner icon="circles"></ion-spinner>',
+          duration: 250
+        });
+      }
+      $scope.events = $scope[show];
+    };
 
     $scope.$on("doRefresh", function() {
       $scope.doRefresh();
@@ -384,20 +451,27 @@ angular.module('tymy.controllers', [])
           ListView.add(events, data.data[i]);
         }
         $scope.events = ListView.all(events);
-        $scope.backupEvents = $scope.events;
-        $scope.switch("inFuture");
+
+        $scope.inFuture = $scope.events.filter(function(el) {
+          if (el.inFuture === true) {
+            return true;
+          }
+        });
+        $scope.inPast = $scope.events.filter(function(el) {
+          if (el.inPast === true) {
+            return true;
+          }
+        });
+        console.log($scope.inFuture);
+        $scope.inFuture = $scope.inFuture.slice()
+          .reverse();
+        $scope.switch("inFuture", true);
       });
     };
-
-    $scope.doRefresh();
   })
   .controller("EventDetailCtrl", function($scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading) {
-    $scope.ServerUrl = TS.Server.url;
     $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.refresh();
-      }
+      $scope.refresh();
     });
 
     $scope.buttonAttendance = function(status) {
@@ -422,6 +496,11 @@ angular.module('tymy.controllers', [])
         $scope.refresh();
       }, angular.toJson(data));
     };
+
+    /**
+     * sestavit celkovou dochazku na udalosti
+     * @return {[type]} [description]
+     */
     $scope.detectAttendance = function() {
       $scope.attendance = {};
       $scope.attendance.UNDECIDED = [];
@@ -438,7 +517,7 @@ angular.module('tymy.controllers', [])
           attd.callName = attendance.user.callName;
           attd.displayName = attendance.user.displayName;
           attd.preDatMod = attendance.preDatMod;
-          attd.pictureUrl = "http://" + TS.Server.url + attendance.user.pictureUrl;
+          attd.pictureUrl = TS.Server.fullUrl() + attendance.user.pictureUrl;
           $scope.attendance[attendance.preStatus].push(attd);
         }
       }
@@ -454,34 +533,26 @@ angular.module('tymy.controllers', [])
       ServerAPI.get(ServerEventDetail, function(data) {
         $scope.event = data.data;
         $scope.detectAttendance();
-        $scope.userAttendance = $filter('filter')($scope.event.attendance, {
-          userId: TS.User.id
-        }, true);
-        $scope.userAttendance = $scope.userAttendance[0];
+        $scope.userAttendance = ServerAPI.userAttendanceOnEvent($scope.event);
       }, {
         eventId: $stateParams.eventId
       });
     };
-    $scope.refresh();
 
     $scope.renderHtml = function(html_code) {
       return $sce.trustAsHtml(html_code);
     };
   })
   .controller("DiscussionDetailCtrl", function($scope, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
-    $scope.ServerUrl = TS.Server.url;
+    $scope.$on('$ionicView.beforeEnter', function() {
+      $scope.refresh();
+    });
 
     $scope.expandText = function() {
       var element = document.getElementById("comment");
       element.style.height = element.scrollHeight + "px";
     };
 
-    $scope.$on('$ionicView.beforeEnter', function() {
-      if (TS.Server.url != $scope.ServerUrl) {
-        $scope.ServerUrl = TS.Server.url;
-        $scope.doRefresh();
-      }
-    });
     $scope.form = {};
     var master = "discussionDetail";
     $scope.renderHtml = function(html_code) {
@@ -538,5 +609,4 @@ angular.module('tymy.controllers', [])
         page: 1
       });
     };
-    $scope.refresh();
   });
