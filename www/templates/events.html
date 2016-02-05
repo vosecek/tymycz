@@ -1,11 +1,11 @@
 <ion-view view-title="Udalosti">
 <ion-nav-buttons side="left">
-<button id='inFuture' class="button button-clear icon" ng-class="{'inFuture':'ion-ios-time','inPast':'ion-ios-time-outline'}[show]" ng-click="switch('inFuture')"></button>
-<button id='inPast' class="button button-clear icon" ng-class="{'inPast':'ion-ios-trash','inFuture':'ion-ios-trash-outline'}[show]" ng-click="switch('inPast')"></button>
+<button id='inFuture' class="button button-clear icon" ng-class="{'inFuture':'ion-ios-timer','inPast':'ion-ios-timer-outline'}[show]" ng-click="switch('inFuture')"></button>
+<button id='inPast' class="button button-clear icon" ng-class="{'inPast':'ion-ios-box','inFuture':'ion-ios-box-outline'}[show]" ng-click="switch('inPast')"></button>
 </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events.slice().reverse()" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/menu/events/{{event.id}}">
         <h2>{{event.caption}}</h2>
         <p>{{event.description}}</p>
         <p>{{event.startTime | date:"dd.MM.yyyy"}}</p>
