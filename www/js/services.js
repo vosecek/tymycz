@@ -1,5 +1,14 @@
 var TS = angular.module("tymy.services", ['ngResource']);
-TS.Server = {};
+TS.Server = {
+  fullUrl: function() {
+    return "http://" + this.url;
+  },
+
+  setTeam: function(data) {
+    for (var i in data)
+      this[i] = data[i];
+  }
+};
 TS.User = {};
 
 TS.factory('ServerDiscussions', ['$resource', function($resource) {
@@ -28,10 +37,16 @@ TS.factory('ServerLogin', ['$resource', function($resource, $stateParams) {
 }]);
 
 
-TS.factory('ServerAPI', function($ionicLoading, $state, $http) {
+TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter) {
   return {
+    userAttendanceOnEvent: function(event) {
+      var attendance = $filter('filter')(event.attendance, {
+        userId: TS.User.id
+      }, true);
+      return attendance[0];
+    },
     http: function(connection, callback, params) {
-      var url = "http://" + TS.Server.url + "/" + connection + "?TSID=" + TS.Server.TSID;
+      var url = TS.Server.fullUrl() + "/" + connection + "?TSID=" + TS.Server.TSID;
       $ionicLoading.show({
         template: '<ion-spinner icon="circles"></ion-spinner>',
         hideOnStageChange: true
@@ -51,15 +66,18 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http) {
         return;
       }
       connection.get(params, function(data) {
+        if (data.status == "OK") {
           callback(data);
-        }, function(error) {
-          $ionicLoading.show({
-            template: "Error during request",
-            duration: 2000
-          });
-          $ionicLoading.hide();
-        },
-        function(error) {});
+        } else {
+          $state.$go("login");
+        }
+      }, function(error) {
+        $ionicLoading.show({
+          template: "Error during request",
+          duration: 2000
+        });
+        $ionicLoading.hide();
+      });
     },
     save: function(connection, callback, params) {
       params.TSID = TS.Server.TSID;
