@@ -1,1 +1,9 @@
 /* Empty. Add your own CSS if you like */
+.center {
+   text-align: center;
+}
+
+.listSpinner {
+   text-align: center;
+   padding:1em;
+}

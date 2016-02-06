@@ -1,15 +1,15 @@
 <ion-view view-title="Přehled">
     <ion-content>
-    <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
-    </ion-refresher>
-        <div class="list card">
+        <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+        </ion-refresher>
+        <div class="list">
             <div class="item item-divider">
                 Diskuze s novými komentáři
             </div>
             <ion-list>
                 <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/menu/discussions/{{discussion.id}}">
                     <small>
-                        {{discussion.caption}} <span ng-if="discussion.newPosts>0" class="badge badge-assertive">{{discussion.newPosts}}</span>
+                    {{discussion.caption}} <span ng-if="discussion.newPosts>0" class="badge badge-assertive">{{discussion.newPosts}}</span>
                     </small>
                 </ion-item>
             </ion-list>
@@ -19,19 +19,24 @@
                 </button>
             </div>
         </div>
-        <div class="list card">
+        <div class="list">
             <div class="item item-divider">
                 Nejbližší akce
             </div>
-            <ion-list>
-                <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/menu/events/{{event.id}}">
-                    <ion-option-button ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event.id}})' ng-class="setAttendanceButton(status)" class="icon icon-left">{{status.caption}}</ion-option-button>
-                    <small>
+            <div id="dashboardEvents">
+                <ion-list>
+                    <div ng-if="eventsLoaded < eventsLimit" class="listSpinner">
+                        <ion-spinner icon="lines"></ion-spinner>
+                    </div>
+                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+                        <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event.id}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
+                        <small>
                         {{event.caption}} {{event.startTime | date:"dd.MM.yyyy"}}
                         <span ng-if="event.userAttendance.caption" class="badge" ng-class="setAttendanceBadge({{event.userAttendance}})">{{event.userAttendance.caption}}</span>
-                    </small>
-                </ion-item>
-            </ion-list>
+                        </small>
+                    </ion-item>
+                </ion-list>
+            </div>
             <div class="item item-divider">
                 <button class='button button-positive button-full' ng-click="go('menu.events')">
                     Všechny události
