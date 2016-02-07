@@ -3,10 +3,10 @@
     <ion-content class="padding">
     <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher>
-        <form class="list">
+        <form class="list" ng-if="discussion.canWrite === true">
             <label class="item item-input" name="comment"><textarea id="comment" msd-elastic ng-model="form.comment" placeholder="Nový příspěvek"></textarea></label>
+            <button class="button button-block button-small button-positive" ng-click="post()">Vložit</button>
         </form>
-        <button class="button  button-block button-small" ng-click="post()">Vložit</button>
         <div class="list card" ng-repeat="post in posts">
             <div class="item item-divider">{{post.createdBy.callName}}, {{post.createdAtStr}}</div>
             <div class="item item-body" ng-class="setClass(post.sticky)">

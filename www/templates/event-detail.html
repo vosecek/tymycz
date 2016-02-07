@@ -1,11 +1,18 @@
 <ion-view>
-<ion-nav-title>{{event.caption}}</ion-nav-title>
-<ion-content>
-<div class="button-bar">
-  <button id='{{type.code}}' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
-</div>
+    <ion-nav-title>{{event.caption}}</ion-nav-title>
+    <ion-content>
+        <div class="button-bar" ng-if="event.canPlan === true && event.inFuture === true">
+            <button id='{{type.code}}' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
+        </div>
 
-  <label class="item item-input">
+        <button class='button button-stable button-block icon icon-left ion-ios-people' ng-if="event.inPast === true">
+        {{userAttendance.preStatus}}
+        <span ng-if="userAttendance.postStatus.length > 0"> - ({{userAttendance.postStatus}})</span>
+        <span ng-if="userAttendance.preDescription.length > 0"> - ({{userAttendance.preDescription}})</span>
+        <span ng-if="userAttendance.postDescription.length > 0"> - ({{userAttendance.postDescription}})</span>
+        </button>
+
+  <label class="item item-input" ng-if='event.inFuture === true'>
     <i class="icon ion-compose placeholder-icon"></i>
     <input type="text" placeholder="Poznámka k účasti" ng-model='userAttendance.preDescription'>
   </label>
@@ -30,9 +37,9 @@
    <div class="item item-text-wrap">
       <p ng-repeat="user in attendance[status.code]">
       {{user.callName}} <span ng-show="user.preDescription.length > 0">({{user.preDescription}})</span>
-      </p>
-   </div>
-</div>
-</div>
-</ion-content>
+            </p>
+            </div>
+            </div>
+            </div>
+    </ion-content>
 </ion-view>
