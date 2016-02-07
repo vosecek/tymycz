@@ -29,10 +29,11 @@
                         <ion-spinner icon="lines"></ion-spinner>
                     </div>
                     <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/menu/events/{{event.id}}">
-                        <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event.id}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
+                        <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
                         <small>
-                        {{event.caption}} {{event.startTime | date:"dd.MM.yyyy"}}
-                        <span ng-if="event.userAttendance.caption" class="badge" ng-class="setAttendanceBadge({{event.userAttendance}})">{{event.userAttendance.caption}}</span>
+                        {{event.caption}}<br/>
+                        {{event.startTime | date:"dd.MM.yyyy"}}
+                        <span ng-if="event.userAttendance.caption" class="badge" ng-class="setAttendanceBadge(event.userAttendance)">{{event.userAttendance.caption}}</span>
                         </small>
                     </ion-item>
                 </ion-list>

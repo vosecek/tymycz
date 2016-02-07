@@ -44,8 +44,10 @@
                 </div>
             </ion-list>
             <ion-list>
-                <ion-item ng-repeat="server in servers" type="item-text-wrap" ng-click="switch(server)">
-                    <h2 ng-class="setClass(server)">{{server.callName}} ({{server.user}})</h2>
+                <ion-item class='item-icon-left' ng-repeat="server in servers" type="item-text-wrap" ng-click="switch(server)">
+                    <i class="icon" ng-class="setIcon(server)"></i>
+                    <span ng-class="setClass(server)">{{server.callName}} ({{server.user}})</span>
+                    <span class="badge badge-assertive" ng-if="server.newPosts > 0">{{server.newPosts}}</span>
                 </ion-item>
             </ion-list>
             <a class="button button-block button-small button-calm icon-left ion-gear-a" menu-close href="#/menu/my-teams">Configure teams</a>
