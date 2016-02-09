@@ -5,6 +5,7 @@ var TC = angular.module('tymy.controllers', []);
 
 TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
    $scope.loadNews = function() {
+      TS.Server.totalNewPosts = 0;
       angular.forEach($scope.$storage, function(server) {
          ServerDiscussions.get({
             url: server.url,
@@ -16,6 +17,7 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
                angular.forEach(data.data, function(discussion) {
                   server.newPosts = server.newPosts + discussion.newPosts;
                });
+               TS.Server.totalNewPosts += server.newPosts;
             }
          });
       });
@@ -213,6 +215,7 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
       $scope.servers = $localStorage.servers;
       $scope.data = TS.User;
       $scope.data.serverCallName = TS.Server.callName;
+      $scope.data.totalNewPosts = TS.Server.totalNewPosts;
    });
 
    $scope.setIcon = function(server) {
@@ -664,6 +667,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
 
       $scope.dirtyNews = function() {
          $scope.$storage = $localStorage.servers;
+         TS.Server.totalNewPosts -= $scope.data.newPosts;
          var record = $filter('filter')($scope.$storage, {
             url: TS.Server.url
          }, true);

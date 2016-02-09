@@ -5,6 +5,7 @@
             </ion-nav-back-button>
             <ion-nav-buttons side="right">
                 <button class="button button-icon button-clear ion-navicon" menu-toggle="right">
+                <div class="badge badge-assertive" ng-if="data.totalNewPosts > 0">{{data.totalNewPosts}}</div>
                 </button>
             </ion-nav-buttons>
         </ion-nav-bar>
