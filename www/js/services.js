@@ -98,10 +98,14 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
               template: "Neznámá adresa " + TS.Server.url + "<br />Podporovány jsou zatím pouze týmy na placeném serveru.",
               duration: 3000
             });
-          }
-          if (error.status == "0") {
+          } else if (error.status == "0") {
             $ionicLoading.show({
               template: "Nezdařilo se připojení k internetu",
+              duration: 3000
+            });
+          } else {
+            $ionicLoading.show({
+              template: error.statusText,
               duration: 3000
             });
           }
