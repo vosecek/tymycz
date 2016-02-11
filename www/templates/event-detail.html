@@ -2,7 +2,7 @@
     <ion-nav-title>{{event.caption}}</ion-nav-title>
     <ion-content>
         <div class="button-bar" ng-if="event.canPlan === true && event.inFuture === true">
-            <button id='{{type.code}}' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
+            <button id='{{type.code}}' ng-model='attendanceButton' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
         </div>
 
         <button class='button button-stable button-block icon icon-left ion-ios-people' ng-if="event.inPast === true">

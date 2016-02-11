@@ -223,10 +223,8 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
       $scope.data = TS.User;
       $scope.data.serverCallName = TS.Server.callName;
 
-      $scope.$watch(function() {
-         return $localStorage.totalNewPosts;
-      }, function(newValue, oldValue) {
-         $scope.data.totalNewPosts = newValue;
+      $scope.$watch('$localStorage.totalNewPosts', function() {
+         $scope.data.totalNewPosts = $localStorage.totalNewPosts;
       });
    });
 
@@ -377,8 +375,7 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
       var dashboardEvents = angular.element(document.getElementById('dashboardEvents'));
       dashboardEvents = $scope.$new(true);
       $ionicLoading.show({
-         template: '<ion-spinner icon="circles"></ion-spinner>',
-         scope: dashboardEvents
+         template: '<ion-spinner icon="circles"></ion-spinner>'
       });
       ServerAPI.get(ServerEvents, function(data) {
          ListView.clear(events);
@@ -546,6 +543,18 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       };
    })
    .controller("EventDetailCtrl", function($scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading) {
+      $scope.$on('$ionicView.enter', function() {
+         $scope.$watch('userAttendance.preDescription', function(newValue, oldValue) {
+            if (oldValue.length > 0 && newValue !== oldValue) {
+               buttons = document.querySelector('.button-bar').getElementsByTagName('button');
+               for (var i = 0; i < buttons.length; ++i) {
+                  button = buttons[i];
+                  angular.element(button).addClass("button-dark");
+               }
+            }
+         });
+      });
+
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.refresh();
       });
@@ -635,6 +644,17 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
          $scope.refresh();
       });
+
+      $scope.copy = function(post) {
+         $ionicLoading.show({
+            template: '<ion-spinner icon="lines"></ion-spinner>',
+            duration: 200
+         });
+         var copied = post.post;
+         copied = copied.replace(/<br\/> /mg, "\n");
+         copied = copied.replace(/<br\/>/mg, "\n");
+         $scope.form.comment = copied;
+      };
 
       $scope.form = {};
       var master = "discussionDetail";
