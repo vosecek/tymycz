@@ -4,9 +4,17 @@ String.prototype.stripSlashes = function() {
 var TC = angular.module('tymy.controllers', []);
 
 TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
+
+   $scope.$on('$ionicView.beforeEnter', function() {
+      if (angular.isDefined($scope.refreshNews)) {
+         $interval.cancel($scope.refreshNews);
+      }
+   });
+
+   $scope.$storage = $localStorage;
    $scope.loadNews = function() {
-      TS.Server.totalNewPosts = 0;
-      angular.forEach($scope.$storage, function(server) {
+      $scope.$storage.totalNewPosts = 0;
+      angular.forEach($scope.$storage.servers, function(server) {
          ServerDiscussions.get({
             url: server.url,
             login: server.user,
@@ -17,17 +25,17 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
                angular.forEach(data.data, function(discussion) {
                   server.newPosts = server.newPosts + discussion.newPosts;
                });
-               TS.Server.totalNewPosts += server.newPosts;
+               $scope.$storage.totalNewPosts += server.newPosts;
             }
          });
       });
    };
    $scope.$on('$ionicView.loaded', function() {
-      $scope.$storage = $localStorage.servers;
-      var record = $filter('filter')($scope.$storage, {
+      var record = $filter('filter')($scope.$storage.servers, {
          autoLogin: true
       }, true);
-      if (record.length > 0) {
+
+      if (record && record.length > 0) {
          $scope.send(record[0]);
       }
    });
@@ -86,16 +94,15 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
             $scope.loadNews();
             loginData.url = loginData.url;
             if ($scope.data.saveAccess === true) {
-               $scope.$storage = $localStorage.servers;
-               if (angular.isUndefined($scope.$storage)) {
-                  $scope.$storage = [];
+               if (angular.isUndefined($scope.$storage.servers)) {
+                  $scope.$storage.servers = [];
                }
-               var record = $filter('filter')($scope.$storage, {
+               var record = $filter('filter')($scope.$storage.servers, {
                   url: loginData.url
                }, true);
 
                if (record.length === 0) {
-                  $scope.$storage.push(loginData);
+                  $scope.$storage.servers.push(loginData);
                   $ionicLoading.show({
                      template: "Nový tým uložen, v nastavení týmů můžeš provést další úpravy"
                   });
@@ -138,14 +145,14 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
    };
 });
 TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $localStorage, $ionicModal) {
-   $scope.$storage = $localStorage.servers;
+   $scope.$storage = $localStorage;
 
    $scope.dropTeam = function(server) {
-      var record = $filter('filter')($scope.$storage, {
+      var record = $filter('filter')($scope.$storage.servers, {
          url: server.url
       }, true);
-      var index = $scope.$storage.indexOf(record[0]);
-      $scope.$storage.splice(index, 1);
+      var index = $scope.$storage.servers.indexOf(record[0]);
+      $scope.$storage.servers.splice(index, 1);
       $scope.closeModal();
       $ionicLoading.show({
          template: "Team removed",
@@ -174,14 +181,14 @@ TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $loca
          template: "Data updated",
          duration: 2000
       });
-      var record = $filter('filter')($scope.$storage, {
+      var record = $filter('filter')($scope.$storage.servers, {
          url: $scope.data.url
       }, true);
       record[0].callName = $scope.data.callName;
       record[0].user = $scope.data.user;
 
       if ($scope.data.autoLogin === true) {
-         angular.forEach($scope.$storage, function(obj) {
+         angular.forEach($scope.$storage.servers, function(obj) {
             if (obj.autoLogin === true) {
                $ionicLoading.show({
                   template: "Auto login zrusen u tymu: " + obj.callName,
@@ -202,7 +209,7 @@ TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $loca
       $scope.modal.remove();
    });
    $scope.configure = function(team) {
-      var record = $filter('filter')($localStorage.servers, {
+      var record = $filter('filter')($scope.$storage.servers, {
          url: team.url
       }, true);
       $scope.data = angular.copy(record[0]);
@@ -215,7 +222,12 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
       $scope.servers = $localStorage.servers;
       $scope.data = TS.User;
       $scope.data.serverCallName = TS.Server.callName;
-      $scope.data.totalNewPosts = TS.Server.totalNewPosts;
+
+      $scope.$watch(function() {
+         return $localStorage.totalNewPosts;
+      }, function(newValue, oldValue) {
+         $scope.data.totalNewPosts = newValue;
+      });
    });
 
    $scope.setIcon = function(server) {
@@ -666,9 +678,9 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       };
 
       $scope.dirtyNews = function() {
-         $scope.$storage = $localStorage.servers;
-         TS.Server.totalNewPosts -= $scope.data.newPosts;
-         var record = $filter('filter')($scope.$storage, {
+         $scope.$storage = $localStorage;
+         $scope.$storage.totalNewPosts -= $scope.data.newPosts;
+         var record = $filter('filter')($scope.$storage.servers, {
             url: TS.Server.url
          }, true);
          if (record.length == 1) {
