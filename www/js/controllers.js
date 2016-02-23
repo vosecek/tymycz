@@ -715,8 +715,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.data = data.data.discussion;
             $scope.dirtyNews();
             for (var i in data.data.posts) {
-               data.data.posts[i].post = data.data.posts[i].post.stripSlashes();
-               ListView.add(master, data.data.posts[i]);
+               if (angular.isDefined(data.data.posts[i].post)) {
+                  data.data.posts[i].post = data.data.posts[i].post.stripSlashes();
+                  ListView.add(master, data.data.posts[i]);
+               }
             }
             $scope.posts = ListView.all(master);
          }, {
