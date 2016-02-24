@@ -15,8 +15,9 @@ TS.factory('ServerDiscussions', ['$resource', function($resource) {
   return $resource('http://:url/api/discussions/withNew');
 }]);
 TS.factory('ServerEvents', ['$resource', function($resource) {
-  return $resource('http://:url/api/events', {
-    "order": "startTime__desc"
+  return $resource('http://:url/api/events/withMyAttendance', {
+    "order": "startTime__desc",
+    "limit": 50
   });
 }]);
 TS.factory('ServerDiscussionDetail', ['$resource', function($resource, $stateParams) {
@@ -25,7 +26,12 @@ TS.factory('ServerDiscussionDetail', ['$resource', function($resource, $statePar
 TS.factory('ServerEventDetail', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/event/:eventId');
 }]);
-
+TS.factory('ServerEventTypes', ['$resource', function($resource, $stateParams) {
+  return $resource('http://:url/api/eventTypes/');
+}]);
+TS.factory('ServerUsers', ['$resource', function($resource, $stateParams) {
+  return $resource('http://:url/api/users/');
+}]);
 TS.factory('ServerDiscussionPost', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/discussion/:discussionId/post');
 }]);
@@ -35,6 +41,7 @@ TS.factory('ServerAttendance', ['$http', function($http, $stateParams) {
 TS.factory('ServerLogin', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/login/:user/:password');
 }]);
+
 
 
 TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLogin, $ionicPlatform, $ionicPopup) {
@@ -143,10 +150,31 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
   };
 
   return {
+    detectEventType: function(event) {
+      EventType = $filter('filter')(TS.Server.EventTypes, {
+        code: event.type
+      }, true);
+      if (angular.isUndefined(EventType)) return false;
+      return EventType[0];
+    },
+    humanAttendance: function(event) {
+      if (angular.isDefined(event.myAttendance)) {
+        EventType = this.detectEventType(event);
+
+        Caption = $filter('filter')(EventType.preStatusSet, {
+          code: event.myAttendance.preStatus
+        }, true);
+        if (angular.isUndefined(Caption)) return false;
+        return Caption[0].caption;
+      }
+    },
     userAttendanceOnEvent: function(event) {
       var attendance = $filter('filter')(event.attendance, {
         userId: TS.User.id
       }, true);
+      if (angular.isUndefined(attendance[0].preDescription)) {
+        attendance[0].preDescription = "";
+      }
       return attendance[0];
     },
     http: wrapperFunction.http,

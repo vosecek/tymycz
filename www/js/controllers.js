@@ -2,9 +2,13 @@ String.prototype.stripSlashes = function() {
    return this.replace(/\\(.)/mg, "$1");
 };
 var TC = angular.module('tymy.controllers', []);
+TC.keyboardOpen = false;
 
-TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
+window.addEventListener('native.keyboardshow', function() {
+   TC.keyboardOpen = true;
+});
 
+TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, ServerDiscussions, $interval, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
    $scope.$on('$ionicView.beforeEnter', function() {
       if (angular.isDefined($scope.refreshNews)) {
          $interval.cancel($scope.refreshNews);
@@ -98,7 +102,8 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
                   $scope.$storage.servers = [];
                }
                var record = $filter('filter')($scope.$storage.servers, {
-                  url: loginData.url
+                  url: loginData.url,
+                  user: loginData.user
                }, true);
 
                if (record.length === 0) {
@@ -113,15 +118,24 @@ TC.controller('LoginCtrl', function($scope, md5, ServerDiscussions, $interval, $
             data.data.pictureUrl = TS.Server.fullUrl() + data.data.pictureUrl;
             TS.User = data.data;
             TS.Server.TSID = data.sessionKey;
-            if (newTeam === true) {
-               $timeout(function() {
-                  $state.go('menu.dashboard');
+
+            ServerAPI.get(ServerUsers, function(data) {
+               TS.Server.Users = data.data;
+            });
+
+            ServerAPI.get(ServerEventTypes, function(data) {
+               TS.Server.EventTypes = data.data;
+
+               if (newTeam === true) {
+                  $timeout(function() {
+                     $state.go('menu.dashboard');
+                     $ionicLoading.hide();
+                  }, 3000);
+               } else {
                   $ionicLoading.hide();
-               }, 3000);
-            } else {
-               $ionicLoading.hide();
-               $state.go('menu.dashboard');
-            }
+                  $state.go('menu.dashboard');
+               }
+            });
          } else {
             $ionicLoading.show({
                template: data.statusMessage,
@@ -149,7 +163,8 @@ TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $loca
 
    $scope.dropTeam = function(server) {
       var record = $filter('filter')($scope.$storage.servers, {
-         url: server.url
+         url: server.url,
+         user: server.user
       }, true);
       var index = $scope.$storage.servers.indexOf(record[0]);
       $scope.$storage.servers.splice(index, 1);
@@ -182,7 +197,8 @@ TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $loca
          duration: 2000
       });
       var record = $filter('filter')($scope.$storage.servers, {
-         url: $scope.data.url
+         url: $scope.data.url,
+         user: $scope.data.user
       }, true);
       record[0].callName = $scope.data.callName;
       record[0].user = $scope.data.user;
@@ -210,7 +226,8 @@ TC.controller('MyTeamsCtrl', function(md5, $ionicLoading, $scope, $filter, $loca
    });
    $scope.configure = function(team) {
       var record = $filter('filter')($scope.$storage.servers, {
-         url: team.url
+         url: team.url,
+         user: team.user
       }, true);
       $scope.data = angular.copy(record[0]);
       $scope.data.password = "";
@@ -229,7 +246,7 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
    });
 
    $scope.setIcon = function(server) {
-      if (server.url == TS.Server.url) {
+      if (server.url == TS.Server.url && server.user == TS.Server.user) {
          return 'ion-ios-circle-filled';
       } else {
          return 'ion-ios-circle-outline';
@@ -237,7 +254,7 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
    };
 
    $scope.setClass = function(server) {
-      if (server.url == TS.Server.url) {
+      if (server.url == TS.Server.url && server.user == TS.Server.user) {
          return "calm";
       }
       return false;
@@ -310,6 +327,10 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
       $scope.doRefresh();
    });
 
+   $scope.humanAttendance = function(event) {
+      return ServerAPI.humanAttendance(event);
+   };
+
    $scope.go = function(target) {
       $ionicHistory.nextViewOptions({
          disableBack: true
@@ -334,8 +355,9 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
             var record = $filter('filter')($scope.events, {
                id: event.id
             }, true);
-            record[0].userAttendance = ServerAPI.userAttendanceOnEvent(data.data);
-            record[0].userAttendance = $scope.detectUserAttendance(record[0], record[0].userAttendance.preStatus);
+            record[0].myAttendance = {
+               preStatus: code
+            };
          }, {
             eventId: event.id
          });
@@ -384,31 +406,17 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
          }
 
          $scope.events = [];
-         var inFuture = ListView.all(events)
-            .filter(function(el) {
-               if (el.inFuture === true) {
-                  return true;
-               }
-            });
+         var inFuture = ListView.all(events).filter(function(el) {
+            if (el.inFuture === true) {
+               return true;
+            }
+         });
          data = inFuture.reverse();
-         $scope.eventsLimit = 3;
-         $scope.eventsLoaded = 0;
-         for (i in inFuture) {
-            if (i == $scope.eventsLimit) break;
-            ServerAPI.get(ServerEventDetail, function(data) {
-               $scope.eventsLoaded++;
-               event = data.data;
-               event.userAttendance = ServerAPI.userAttendanceOnEvent(event);
-               event.userAttendance = $scope.detectUserAttendance(event, event.userAttendance.preStatus);
+         $scope.events = data.slice(0, 3);
 
-               $scope.events.push(event);
-               $scope.events.sort(function(a, b) {
-                  return (a.startTime < b.startTime ? 1 : -1);
-               });
-            }, {
-               eventId: data[i].id
-            });
-         }
+         angular.forEach($scope.events, function(event) {
+            event.eventType = ServerAPI.detectEventType(event);
+         });
          $ionicLoading.hide();
       });
    };
@@ -429,25 +437,18 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
    };
 
    $scope.setAttendanceBadge = function(status) {
-      if (status.code == "YES") {
+      if (status.preStatus == "YES") {
          return "badge-balanced";
       }
-      if (status.code == "NO") {
+      if (status.preStatus == "NO") {
          return "badge-assertive";
       }
-      if (status.code == "LAT") {
+      if (status.preStatus == "LAT") {
          return "badge-royal";
       }
-      if (status.code == "DKY") {
+      if (status.preStatus == "DKY") {
          return "badge-calm";
       }
-   };
-
-   $scope.detectUserAttendance = function(event, code) {
-      var record = event.eventType.preStatusSet.filter(function(el) {
-         if (el.code == code) return true;
-      });
-      return record[0];
    };
 
    $scope.doRefresh = function() {
@@ -536,15 +537,14 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                   return true;
                }
             });
-            $scope.inFuture = $scope.inFuture.slice()
-               .reverse();
+            $scope.inFuture = $scope.inFuture.slice().reverse();
             $scope.switch("inFuture", true);
          });
       };
    })
    .controller("EventDetailCtrl", function($scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading) {
       $scope.$on('$ionicView.enter', function() {
-         $scope.$watch('userAttendance.preDescription', function(newValue, oldValue) {
+         $scope.$watch('myAttendance.preDescription', function(newValue, oldValue) {
             if (oldValue.length > 0 && newValue !== oldValue) {
                buttons = document.querySelector('.button-bar').getElementsByTagName('button');
                for (var i = 0; i < buttons.length; ++i) {
@@ -555,12 +555,44 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          });
       });
 
+      $scope.genderAttendance = function(attendance) {
+         var output = [];
+         var male = [];
+         var female = [];
+         var unknown = [];
+         angular.forEach(attendance, function(el) {
+            user = $filter('filter')(TS.Server.Users, {
+               callName: el.callName
+            }, true);
+
+            if (angular.isDefined(user) && user.length > 0) {
+               user = user[0];
+               if (user.gender == "MALE") {
+                  male.push(user.callName);
+               } else if (user.gender == "FEMALE") {
+                  female.push(user.callName);
+               } else {
+                  unknown.push(user.callName);
+               }
+            } else {
+               unknown.push(el.callName);
+            }
+         });
+
+         output.push("<i class='icon ion-male'></i> " + male.length);
+         output.push("<i class='icon ion-female'></i> " + female.length);
+         if (unknown.length > 0) {
+            output.push("<i class='icon ion-help'></i> " + unknown.length);
+         }
+         return "(" + output.join(", ") + ")";
+      };
+
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.refresh();
       });
 
       $scope.buttonAttendance = function(status) {
-         if (status == $scope.userAttendance.preStatus) {
+         if (status == $scope.myAttendance.preStatus) {
             if (status == "YES") {
                return "button-balanced";
             }
@@ -581,7 +613,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             userId: TS.User.id,
             eventId: $stateParams.eventId,
             preStatus: code,
-            preDescription: $scope.userAttendance.preDescription
+            preDescription: $scope.myAttendance.preDescription
          }];
 
          ServerAPI.http(ServerAttendance, function(data) {
@@ -629,7 +661,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          ServerAPI.get(ServerEventDetail, function(data) {
             $scope.event = data.data;
             $scope.detectAttendance();
-            $scope.userAttendance = ServerAPI.userAttendanceOnEvent($scope.event);
+            $scope.myAttendance = ServerAPI.userAttendanceOnEvent($scope.event);
          }, {
             eventId: $stateParams.eventId
          });
@@ -645,6 +677,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          $scope.refresh();
       });
 
+      $scope.textareaStyle = false;
+
       $scope.copy = function(post) {
          $ionicLoading.show({
             template: '<ion-spinner icon="lines"></ion-spinner>',
@@ -653,7 +687,9 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          var copied = post.post;
          copied = copied.replace(/<br\/> /mg, "\n");
          copied = copied.replace(/<br\/>/mg, "\n");
-         $scope.form.comment = copied;
+         $scope.form.comment = copied + "\n";
+         $scope.commentFocus = true;
+         // $scope.form.comment.focus();
       };
 
       $scope.form = {};
@@ -701,7 +737,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          $scope.$storage = $localStorage;
          $scope.$storage.totalNewPosts -= $scope.data.newPosts;
          var record = $filter('filter')($scope.$storage.servers, {
-            url: TS.Server.url
+            url: TS.Server.url,
+            user: TS.Server.user,
          }, true);
          if (record.length == 1) {
             record[0].newPosts = record[0].newPosts - $scope.data.newPosts;

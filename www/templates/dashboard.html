@@ -33,7 +33,7 @@
                         <small>
                         {{event.caption}}<br/>
                         {{event.startTime | date:"dd.MM.yyyy"}}
-                        <span ng-if="event.userAttendance.caption" class="badge" ng-class="setAttendanceBadge(event.userAttendance)">{{event.userAttendance.caption}}</span>
+                        <span ng-if="event.myAttendance.preStatus" class="badge" ng-class="setAttendanceBadge(event.myAttendance)" ng-bind-html="humanAttendance(event)"></span>
                         </small>
                     </ion-item>
                 </ion-list>

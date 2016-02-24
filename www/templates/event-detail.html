@@ -6,15 +6,15 @@
         </div>
 
         <button class='button button-stable button-block icon icon-left ion-ios-people' ng-if="event.inPast === true">
-        {{userAttendance.preStatus}}
-        <span ng-if="userAttendance.postStatus.length > 0"> - ({{userAttendance.postStatus}})</span>
-        <span ng-if="userAttendance.preDescription.length > 0"> - ({{userAttendance.preDescription}})</span>
-        <span ng-if="userAttendance.postDescription.length > 0"> - ({{userAttendance.postDescription}})</span>
+        {{myAttendance.preStatus}}
+        <span ng-if="myAttendance.postStatus.length > 0"> - ({{myAttendance.postStatus}})</span>
+        <span ng-if="myAttendance.preDescription.length > 0"> - ({{myAttendance.preDescription}})</span>
+        <span ng-if="myAttendance.postDescription.length > 0"> - ({{myAttendance.postDescription}})</span>
         </button>
 
   <label class="item item-input" ng-if='event.inFuture === true'>
     <i class="icon ion-compose placeholder-icon"></i>
-    <input type="text" placeholder="Poznámka k účasti" ng-model='userAttendance.preDescription'>
+    <input type="text" placeholder="Poznámka k účasti" ng-model='myAttendance.preDescription'>
   </label>
 
 
@@ -31,10 +31,11 @@
 
 <div ng-repeat="status in event.eventType.preStatusSet">
 <div class="card">
-   <div class="item item-divider">
-       {{status.caption}}
+   <div class="item item-divider" on-tap='showAttendance = ! showAttendance'>
+       {{status.caption}} <span ng-bind-html="genderAttendance(attendance[status.code])"></span>
+       <i class="fr icon" ng-class='showAttendance?"ion-eye-disabled":"ion-eye"'></i>
    </div>
-   <div class="item item-text-wrap">
+   <div class="item item-text-wrap" ng-show="showAttendance">
       <p ng-repeat="user in attendance[status.code]">
       {{user.callName}} <span ng-show="user.preDescription.length > 0">({{user.preDescription}})</span>
             </p>
