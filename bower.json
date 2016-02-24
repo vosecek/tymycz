@@ -5,6 +5,7 @@
     "ionic": "driftyco/ionic-bower#1.2.4"
   },
   "dependencies": {
-    "angular-md5": "~0.1.10"
+    "angular-md5": "~0.1.10",
+    "ng-focus-if": "~1.0.4"
   }
 }
