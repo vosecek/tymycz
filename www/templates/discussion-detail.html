@@ -4,13 +4,13 @@
     <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
     </ion-refresher>
         <form class="list" ng-if="discussion.canWrite === true">
-            <label class="item item-input" name="comment"><textarea id="comment" msd-elastic ng-model="form.comment" placeholder="Nový příspěvek"></textarea></label>
+            <label class="item item-input" name="comment"><textarea style="max-height:45vh;" id="comment" msd-elastic ng-model="form.comment" placeholder="Nový příspěvek"></textarea></label>
             <button class="button button-block button-small button-positive" ng-click="post()">Vložit</button>
         </form>
         <div class="list card" ng-repeat="post in posts">
-            <div class="item item-divider">
+            <div class="item item-divider" ng-click="copy(post)">
             {{post.createdBy.callName}}, {{post.createdAtStr}}
-            <span href="#" class="item-icon-right" ng-click="copy(post)">
+            <span href="#" class="item-icon-right">
     <i class="icon ion-ios-copy-outline"></i>
     </span>
             </div>
