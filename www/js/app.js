@@ -7,7 +7,7 @@
 // 
 
 
-angular.module('tymy.cz', ['ngStorage', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services'])
+angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services'])
   .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
