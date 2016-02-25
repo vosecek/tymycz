@@ -1,7 +1,7 @@
 {
-  "name": "tymycz",
+  "name": "Tymy.cz",
   "version": "1.1.1",
-  "description": "tymycz: An Ionic project",
+  "description": "Čtení a zápis na servery tymy.cz",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",

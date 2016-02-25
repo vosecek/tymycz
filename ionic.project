@@ -1,4 +1,5 @@
 {
   "name": "tymycz",
-  "app_id": "f3625248"
+  "app_id": "f3625248",
+  "disablePushNotifications":true
 }
