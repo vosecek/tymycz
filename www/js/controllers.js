@@ -384,10 +384,6 @@ TC.controller('DashboardCtrl', function($scope, $ionicListDelegate, $filter, Ser
    $ionicLoading.counter = 2;
    var discussions = "discussions";
 
-   $scope.$on("doRefresh", function() {
-      $scope.doRefresh();
-   });
-
    $scope.refreshDiscussions = function() {
       ServerAPI.get(ServerDiscussions, function(data) {
          ListView.clear(discussions);
@@ -515,10 +511,6 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          }
          $scope.events = $scope[show];
       };
-
-      $scope.$on("doRefresh", function() {
-         $scope.doRefresh();
-      });
 
       $scope.doRefresh = function() {
          $scope.refresh();
@@ -700,10 +692,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          copied = copied.replace(/<br\/>/mg, "\n");
          $scope.form.comment = copied + "\n";
          $scope.commentFocus = true;
-         // $scope.form.comment.focus();
       };
 
       $scope.form = {};
+      $scope.form.comment = "";
       var master = "discussionDetail";
       $scope.renderHtml = function(html_code) {
          return $sce.trustAsHtml(html_code);
@@ -720,9 +712,6 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          template: 'Nacitam diskuzi ...'
       });
 
-      $scope.$on("doRefresh", function() {
-         $scope.doRefresh();
-      });
 
       $scope.doRefresh = function() {
          $scope.refresh();
@@ -734,8 +723,12 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          });
          ServerAPI.save(ServerDiscussionPost, function(data) {
             $scope.posts = ListView.all(master);
+            $ionicLoading.show({
+               template: "Příspěvek vložen",
+               duration: 900
+            });
             $scope.form.comment = "";
-            $scope.refresh();
+            $scope.refresh(true);
          }, {
             discussionId: $stateParams.discussionId,
             post: {
@@ -756,10 +749,11 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          }
       };
 
-      $scope.refresh = function() {
+      $scope.refresh = function(supressHide) {
+         supressHide = supressHide || false;
          ServerAPI.get(ServerDiscussionDetail, function(data) {
             ListView.clear(master);
-            $ionicLoading.hide();
+            if (supressHide === false) $ionicLoading.hide();
             $scope.data = data.data.discussion;
             $scope.dirtyNews();
             for (var i in data.data.posts) {

@@ -145,7 +145,6 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
       Request.$save(params, function(data) {
         callback(data);
       });
-      $ionicLoading.hide();
     }
   };
 
