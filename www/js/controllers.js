@@ -8,6 +8,17 @@ window.addEventListener('native.keyboardshow', function() {
    TC.keyboardOpen = true;
 });
 
+TC.controller('AboutCtrl', function($scope, $window) {
+   $scope.$on('$ionicView.beforeEnter', function(event, viewData) {
+      viewData.enableBack = true;
+   });
+
+   $scope.email = function(email) {
+      var link = "mailto:" + email + "?subject=Tymy.cz aplikace";
+      $window.location.href = link;
+   };
+});
+
 TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, ServerDiscussions, $interval, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
    $scope.$on('$ionicView.beforeEnter', function() {
       if (angular.isDefined($scope.refreshNews)) {
@@ -267,7 +278,7 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
       $timeout(function() {
          $ionicHistory.clearCache();
          $ionicHistory.clearHistory();
-         $state.go('login', {}, {
+         $state.go('start.login', {}, {
             reload: true
          });
          $ionicLoading.hide();
@@ -313,11 +324,11 @@ TC.controller('MenuCtrl', function($scope, $timeout, ListView, $rootScope, $ioni
                   template: data.statusMessage,
                   duration: 2000
                });
-               $state.go('login');
+               $state.go('start.login');
             }
          },
          function(error) {
-            $state.go('login');
+            $state.go('start.login');
             $ionicLoading.hide();
          });
    };

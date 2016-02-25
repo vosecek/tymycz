@@ -67,7 +67,7 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
       params.TSID = TS.Server.TSID;
       params.url = TS.Server.url;
       if (angular.isUndefined(TS.Server.url)) {
-        $state.go('login');
+        $state.go('start.login');
         $ionicLoading.hide();
         return;
       }

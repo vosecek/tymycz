@@ -24,10 +24,28 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
   })
   .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state('login', {
+      .state('start', {
+        url: '/start',
+        abstract: true,
+        templateUrl: 'templates/start.html'
+      })
+      .state('start.login', {
         url: '/login',
-        templateUrl: 'templates/login.html',
-        controller: 'LoginCtrl'
+        views: {
+          "start-login": {
+            templateUrl: 'templates/login.html',
+            controller: 'LoginCtrl'
+          }
+        }
+      })
+      .state('start.about', {
+        url: '/about',
+        views: {
+          "start-about": {
+            templateUrl: 'templates/about.html',
+            controller: 'AboutCtrl'
+          }
+        }
       })
       .state('menu', {
         url: '/menu',
@@ -90,5 +108,5 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
         }
       });
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/start/login');
   });
