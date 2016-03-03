@@ -47,63 +47,63 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
           }
         }
       })
-      .state('menu', {
-        url: '/menu',
+      .state('tab', {
+        url: '/tab',
         abstract: true,
-        templateUrl: 'templates/menu.html',
-        controller: 'MenuCtrl'
+        templateUrl: 'templates/tabs.html',
+        controller: 'TabCtrl'
       })
-      .state('menu.my-teams', {
-        url: '/my-teams',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/my-teams.html',
-            controller: 'MyTeamsCtrl'
-          }
-        }
-      })
-      .state('menu.discussions', {
+      .state('tab.discussions', {
         url: '/discussions',
         views: {
-          'menuContent': {
+          'tab-discussions': {
             templateUrl: 'templates/discussions.html',
             controller: 'DiscussionsCtrl'
           }
         }
       })
-      .state('menu.discussion-detail', {
+      .state('tab.discussion-detail', {
         url: '/discussions/:discussionId',
         views: {
-          'menuContent': {
+          'tab-discussions': {
             templateUrl: 'templates/discussion-detail.html',
             controller: 'DiscussionDetailCtrl'
           }
         }
       })
-      .state('menu.events', {
+      .state('tab.events', {
         url: '/events',
         views: {
-          'menuContent': {
+          'tab-events': {
             templateUrl: 'templates/events.html',
             controller: 'EventsCtrl'
           }
         }
       })
-      .state('menu.event-detail', {
+      .state('tab.event-detail', {
         url: '/events/:eventId',
         views: {
-          'menuContent': {
+          'tab-events': {
             templateUrl: 'templates/event-detail.html',
             controller: 'EventDetailCtrl'
           }
         }
       })
-      .state('menu.dashboard', {
+      .state('tab.dashboard', {
         url: '/dashboard',
         views: {
-          'menuContent': {
+          'tab-dashboard': {
             templateUrl: 'templates/dashboard.html',
             controller: 'DashboardCtrl'
+          }
+        }
+      })
+      .state('tab.user', {
+        url: '/user',
+        views: {
+          'tab-user': {
+            templateUrl: 'templates/user.html',
+            controller: 'UserCtrl'
           }
         }
       });

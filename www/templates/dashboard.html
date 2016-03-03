@@ -1,4 +1,7 @@
-<ion-view view-title="Přehled">
+<ion-view>
+    <ion-nav-title>
+        {{data.serverCallName}}
+    </ion-nav-title>
     <ion-content>
         <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
         </ion-refresher>
@@ -7,14 +10,14 @@
                 Diskuze s novými komentáři
             </div>
             <ion-list>
-                <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/menu/discussions/{{discussion.id}}">
+                <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/tab/discussions/{{discussion.id}}">
                     <small>
                     {{discussion.caption}} <span ng-if="discussion.newPosts>0" class="badge badge-assertive">{{discussion.newPosts}}</span>
                     </small>
                 </ion-item>
             </ion-list>
             <div class="item item-divider">
-                <button class='button button-calm button-full' ng-click="go('menu.discussions')">
+                <button class='button button-calm button-full' ng-click="go('tab.discussions')">
                     Všechny diskuze
                 </button>
             </div>
@@ -28,7 +31,7 @@
                     <div ng-if="eventsLoaded < eventsLimit" class="listSpinner">
                         <ion-spinner icon="lines"></ion-spinner>
                     </div>
-                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/menu/events/{{event.id}}">
+                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/events/{{event.id}}">
                         <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
                         <small>
                         {{event.caption}}<br/>
@@ -39,10 +42,17 @@
                 </ion-list>
             </div>
             <div class="item item-divider">
-                <button class='button button-positive button-full' ng-click="go('menu.events')">
+                <button class='button button-positive button-full' ng-click="go('tab.events')">
                     Všechny události
                 </button>
             </div>
         </div>
+        <ion-list>
+            <ion-item class='item-icon-left' ng-repeat="server in servers" type="item-text-wrap" ng-click="switch(server)">
+                <i class="icon" ng-class="setIcon(server)"></i>
+                <span ng-class="setClass(server)">{{server.callName}} ({{server.user}})</span>
+                <span class="badge badge-assertive" ng-if="server.newPosts > 0">{{server.newPosts}}</span>
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>

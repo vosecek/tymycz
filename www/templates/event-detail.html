@@ -1,4 +1,9 @@
 <ion-view>
+<ion-nav-buttons>
+    <a ng-if="showDashboard" class="button button-clear icon ion-android-arrow-back" ng-click='go("tab.dashboard")'></a>
+    <a ng-if="showDashboard" class="button button-clear icon ion-ios-list-outline" ng-click='go("tab.events")'></a>
+</ion-nav-buttons>
+
     <ion-nav-title>{{event.caption}}</ion-nav-title>
     <ion-content>
         <div class="button-bar" ng-if="event.canPlan === true && event.inFuture === true">
