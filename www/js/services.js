@@ -9,6 +9,7 @@ TS.Server = {
       this[i] = data[i];
   }
 };
+
 TS.User = {};
 
 TS.factory('ServerDiscussions', ['$resource', function($resource) {
