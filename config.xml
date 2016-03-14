@@ -2,7 +2,7 @@
 <widget id="cz.tymy.app" version="0.4.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Tymy.cz</name>
   <description>
-        Čtečka a zápiska pro server tymy.cz.
+        Čtečka a zápiska pro server tymy.cz se seznamem týmu.
     </description>
   <author email="jiri.vosecek@gmail.com" href="http://www.frisbee.cz/">
       Jiří Voseček
