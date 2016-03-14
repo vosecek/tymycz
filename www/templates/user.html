@@ -1,0 +1,12 @@
+<ion-view>
+<ion-nav-title>{{data.callName}}</ion-nav-title>
+<ion-content class="padding">
+<h4 class="displayName">{{data.displayName}}</h4>
+<img class="userImage" ng-src="{{data.pictureUrl}}">
+<div class="lastLogin">Poslední přihlášení: {{data.lastLogin| date:"dd.MM.yyyy HH:MM"}}</div>
+<ion-list>
+<ion-item ng-click="email()" class="item-icon-left"><i class="icon ion-at"></i>{{data.email}}</ion-item>
+<ion-item class="item-icon-left"><i class="icon ion-ios-telephone"></i>...</ion-item>
+</ion-list>
+</ion-content>
+</ion-view>

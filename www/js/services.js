@@ -33,6 +33,9 @@ TS.factory('ServerEventTypes', ['$resource', function($resource, $stateParams) {
 TS.factory('ServerUsers', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/users/');
 }]);
+TS.factory('ServerUserDetail', ['$resource', function($resource, $stateParams) {
+  return $resource('http://:url/api/user/:userId');
+}]);
 TS.factory('ServerDiscussionPost', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/discussion/:discussionId/post');
 }]);

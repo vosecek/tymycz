@@ -71,6 +71,8 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
          TS.Server.setTeam(loginData);
       }
 
+
+
       ServerLogin.get(loginData, function(data) {
          // zaregistrovat refresh interval
          if (angular.isDefined($scope.refreshNews)) {
@@ -102,7 +104,10 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
             TS.Server.TSID = data.sessionKey;
 
             ServerAPI.get(ServerUsers, function(data) {
-               TS.Server.Users = data.data;
+               $scope.$storage.Users = data.data;
+               angular.forEach($scope.$storage.Users, function(obj) {
+                  if (angular.isUndefined(obj.gender)) obj.gender = "nenastaveno";
+               });
             });
 
             ServerAPI.get(ServerEventTypes, function(data) {
@@ -141,7 +146,7 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
    };
 });
 
-TC.controller('TabCtrl', function($scope, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
+TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTypes, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
    $scope.$storage = $localStorage;
    $scope.data = {};
 
@@ -186,6 +191,19 @@ TC.controller('TabCtrl', function($scope, $timeout, ListView, $rootScope, $ionic
                TS.User = data.data;
                TS.Server.TSID = data.sessionKey;
                ListView.clearAll();
+
+               ServerAPI.get(ServerUsers, function(data) {
+                  $scope.$storage.Users = data.data;
+                  angular.forEach($scope.$storage.Users, function(obj) {
+                     if (angular.isUndefined(obj.gender)) obj.gender = "nenastaveno";
+                  });
+               });
+
+               ServerAPI.get(ServerEventTypes, function(data) {
+                  TS.Server.EventTypes = data.data;
+                  $ionicLoading.hide();
+                  $state.go('tab.dashboard');
+               });
 
                $timeout(function() {
                   $ionicHistory.clearCache();
@@ -292,19 +310,12 @@ TC.controller('DashboardCtrl', function($scope, $localStorage, $interval, $rootS
    $scope.newPosts = function(p) {
       return p.newPosts > 0;
    };
-   $ionicLoading.show({
-      template: 'Načítání dat ...'
-   });
-   $ionicLoading.counter = 2;
+
    var discussions = "discussions";
 
    $scope.refreshDiscussions = function() {
       ServerAPI.get(ServerDiscussions, function(data) {
          ListView.clear(discussions);
-         $ionicLoading.counter--;
-         if ($ionicLoading.counter === 0) {
-            $ionicLoading.hide();
-         }
          for (var i in data.data) {
             ListView.add(discussions, data.data[i]);
          }
@@ -317,9 +328,6 @@ TC.controller('DashboardCtrl', function($scope, $localStorage, $interval, $rootS
       $scope.events = [];
       var dashboardEvents = angular.element(document.getElementById('dashboardEvents'));
       dashboardEvents = $scope.$new(true);
-      $ionicLoading.show({
-         template: '<ion-spinner icon="circles"></ion-spinner>'
-      });
       ServerAPI.get(ServerEvents, function(data) {
          ListView.clear(events);
          for (var i in data.data) {
@@ -338,7 +346,6 @@ TC.controller('DashboardCtrl', function($scope, $localStorage, $interval, $rootS
          angular.forEach($scope.events, function(event) {
             event.eventType = ServerAPI.detectEventType(event);
          });
-         $ionicLoading.hide();
       });
    };
 
@@ -385,9 +392,6 @@ TC.controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, S
    });
 
    var master = "discussions";
-   $ionicLoading.show({
-      template: 'Nacitam diskuze ...'
-   });
 
    $scope.$on("doRefresh", function() {
       $scope.doRefresh();
@@ -401,17 +405,70 @@ TC.controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, S
    $scope.refresh = function() {
       ServerAPI.get(ServerDiscussions, function(data) {
          ListView.clear(master);
-         $ionicLoading.hide();
          for (var i in data.data) {
-            if (data.data[i].status !== "DELETED") {
-               ListView.add(master, data.data[i]);
-            }
+            ListView.add(master, data.data[i]);
          }
          $scope.discussions = ListView.all(master);
       });
    };
 });
-TC.controller('UserCtrl', function($scope, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
+TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar) {
+   $scope.$storage = $localStorage;
+   $scope.$on('$ionicView.beforeEnter', function() {
+      $scope.users = $scope.$storage.Users;
+   });
+
+   $scope.showFilterBar = function() {
+      filterBarInstance = $ionicFilterBar.show({
+         items: $scope.users,
+         update: function(filteredItems) {
+            $scope.users = filteredItems;
+         },
+         expression: function(filterText, value, index, array) {
+            console.log(value);
+            var re = new RegExp(filterText, "gi");
+            if (angular.isDefined(value.firstName)) {
+               if (value.firstName.match(re)) {
+                  return true;
+               }
+            }
+            if (angular.isDefined(value.displayName)) {
+               if (value.displayName.match(re)) {
+                  return true;
+               }
+            }
+            if (angular.isDefined(value.lastName)) {
+               if (value.lastName.match(re)) {
+                  return true;
+               }
+            }
+            if (angular.isDefined(value.email)) {
+               if (value.email.match(re)) {
+                  return true;
+               }
+            }
+         }
+      });
+   };
+
+
+});
+TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window) {
+   $scope.$on('$ionicView.beforeEnter', function() {
+      ServerAPI.get(ServerUserDetail, function(data) {
+         $scope.data = data.data;
+         console.log($scope.data);
+         $scope.data.pictureUrl = TS.Server.fullUrl() + $scope.data.pictureUrl;
+      }, {
+         userId: $stateParams.userId
+      });
+   });
+   $scope.email = function() {
+      var link = "mailto:" + $scope.data.email + "?subject=Tymy.cz";
+      $window.location.href = link;
+   };
+});
+TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
    $scope.$storage = $localStorage;
 
    $scope.$on('$ionicView.beforeEnter', function() {
@@ -529,12 +586,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
 
       var events = "events";
       $scope.refresh = function() {
-         $ionicLoading.show({
-            template: 'Načítám události ...'
-         });
          ServerAPI.get(ServerEvents, function(data) {
             ListView.clear(events);
-            $ionicLoading.hide();
             for (var i in data.data) {
                ListView.add(events, data.data[i]);
             }
@@ -555,15 +608,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          });
       };
    })
-   .controller("EventDetailCtrl", function($ionicConfig, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
-      $scope.showDashboard = false;
+   .controller("EventDetailCtrl", function($ionicConfig, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
+      $scope.$storage = $localStorage;
       $scope.$on('$ionicView.beforeEnter', function(event, viewData) {
-         var history = $ionicHistory.viewHistory();
-         if (angular.isDefined(history.backView) && history.backView.stateId == "tab.dashboard") {
-            $scope.showDashboard = true;
-         } else {
-            $scope.showDashboard = false;
-         }
+
       });
       $scope.$on('$ionicView.enter', function(event, viewData) {
          $scope.$watch('myAttendance.preDescription', function(newValue, oldValue) {
@@ -590,8 +638,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          var female = [];
          var unknown = [];
          angular.forEach(attendance, function(el) {
-            user = $filter('filter')(TS.Server.Users, {
-               callName: el.callName
+            user = $filter('filter')($scope.$storage.Users, {
+               id: el.userId
             }, true);
 
             if (angular.isDefined(user) && user.length > 0) {
@@ -669,22 +717,12 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                if (angular.isUndefined($scope.attendance[attendance.preStatus])) {
                   $scope.attendance[attendance.preStatus] = [];
                }
-               var attd = {};
-               attd.preDescription = attendance.preDescription;
-               attd.callName = attendance.user.callName;
-               attd.displayName = attendance.user.displayName;
-               attd.preDatMod = attendance.preDatMod;
-               attd.pictureUrl = TS.Server.fullUrl() + attendance.user.pictureUrl;
-               $scope.attendance[attendance.preStatus].push(attd);
+               $scope.attendance[attendance.preStatus].push(attendance);
             }
          }
          var undecided = $scope.attendance.UNDECIDED;
          delete $scope.attendance.UNDECIDED;
          $scope.attendance.UNDECIDED = undecided;
-         // $scope.event.eventType.preStatusSet.push({
-         //   caption: "Undecided",
-         //   code: "UNDECIDED"
-         // });
       };
       $scope.refresh = function() {
          ServerAPI.get(ServerEventDetail, function(data) {
@@ -701,14 +739,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       };
    })
    .controller("DiscussionDetailCtrl", function($scope, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
-      $scope.showDashboard = false;
       $scope.$on('$ionicView.beforeEnter', function() {
-         var history = $ionicHistory.viewHistory();
-         if (angular.isDefined(history.backView) && history.backView.stateId == "tab.dashboard") {
-            $scope.showDashboard = true;
-         } else {
-            $scope.showDashboard = false;
-         }
          $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
          $scope.refresh();
       });

@@ -1,0 +1,17 @@
+<ion-view view-title="Můj účet">
+<ion-nav-buttons side="right">
+<a class="button button-clear icon ion-log-out button-assertive" ng-click="logout()"></a>
+</ion-nav-buttons>
+<ion-content>
+<h4 class="displayName">{{data.displayName}}</h4>
+<img class="userImage" ng-src="{{data.pictureUrl}}">
+<div class="lastLogin">Poslední přihlášení: {{data.lastLogin| date:"dd.MM.yyyy HH:MM"}}</div>
+<ion-list>
+<ion-item ng-repeat="server in servers" class='item item-icon-left' type="item-text-wrap" ng-click="configure(server)">
+<i class="icon ion-gear-a"></i>
+<ion-option-button ng-click='dropTeam(server)' class="button-assertive icon ion-trash-a"></ion-option-button>
+{{server.callName}} ({{server.user}})
+</ion-item>
+</ion-list>
+</ion-content>
+</ion-view>

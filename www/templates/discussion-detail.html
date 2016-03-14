@@ -1,8 +1,4 @@
 <ion-view>
-    <ion-nav-buttons>
-        <a ng-if="showDashboard" class="button button-clear icon ion-android-arrow-back" href="#/tab/dashboard"></a>
-        <a ng-if="showDashboard" class="button button-clear icon ion-ios-list-outline" href="#/tab/discussions"></a>
-    </ion-nav-buttons>
     <ion-nav-title>{{data.caption}}</ion-nav-title>
     <ion-content class="padding">
         <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">

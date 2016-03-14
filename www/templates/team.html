@@ -1,0 +1,23 @@
+<ion-view view-title="Tým">
+<ion-nav-buttons side="right">
+<button class="button button-icon ion-android-search" ng-click="showFilterBar()"></button>
+</ion-nav-buttons>
+<ion-nav-buttons side="left">
+<a class="button button-clear icon ion-person" href="#/tab/team/account">Můj účet</a>
+</ion-nav-buttons>
+
+<ion-content>
+<ion-list>
+<ion-item ng-repeat="(key,value) in users | groupBy: 'status'|orderBy:'displayName'" type="item-text-wrap">
+<ion-item class="item-divider">{{key}}</ion-item>
+<ion-item ng-repeat="(key2,value2) in value | groupBy: 'gender'" type="item-text-wrap">
+<ion-item class="item-divider">{{key2}}</ion-item>
+<ion-item class="item-icon-right" class="item" ng-repeat="user in value2" href="#/tab/team/user/{{user.id}}">
+<h2>{{user.displayName}}</h2>
+<i class="icon ion-chevron-right icon-accessory"></i>
+</ion-item>
+</ion-item>
+</ion-item>
+</ion-list>
+</ion-content>
+</ion-view>

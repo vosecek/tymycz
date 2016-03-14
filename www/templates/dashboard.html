@@ -10,7 +10,7 @@
                 Diskuze s novými komentáři
             </div>
             <ion-list>
-                <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/tab/discussions/{{discussion.id}}">
+                <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/tab/dashboard/discussions/{{discussion.id}}">
                     <small>
                     {{discussion.caption}} <span ng-if="discussion.newPosts>0" class="badge badge-assertive">{{discussion.newPosts}}</span>
                     </small>
@@ -31,7 +31,7 @@
                     <div ng-if="eventsLoaded < eventsLimit" class="listSpinner">
                         <ion-spinner icon="lines"></ion-spinner>
                     </div>
-                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/events/{{event.id}}">
+                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/dashboard/events/{{event.id}}">
                         <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
                         <small>
                         {{event.caption}}<br/>

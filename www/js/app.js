@@ -7,7 +7,7 @@
 // 
 
 
-angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services'])
+angular.module('tymy.cz', ['ngStorage', 'angular.filter', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar'])
   .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -91,6 +91,7 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
       })
       .state('tab.dashboard', {
         url: '/dashboard',
+        cache: false,
         views: {
           'tab-dashboard': {
             templateUrl: 'templates/dashboard.html',
@@ -98,10 +99,49 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
           }
         }
       })
-      .state('tab.user', {
-        url: '/user',
+      .state('tab.dashboard-event-detail', {
+        url: '/dashboard/events/:eventId',
+        cache: false,
         views: {
-          'tab-user': {
+          'tab-dashboard': {
+            templateUrl: 'templates/event-detail.html',
+            controller: 'EventDetailCtrl'
+          }
+        }
+      })
+      .state('tab.dashboard-discussion-detail', {
+        url: '/dashboard/discussions/:discussionId',
+        views: {
+          'tab-dashboard': {
+            templateUrl: 'templates/discussion-detail.html',
+            controller: 'DiscussionDetailCtrl'
+          }
+        }
+      })
+      .state('tab.team', {
+        url: '/team',
+        views: {
+          'tab-team': {
+            templateUrl: 'templates/team.html',
+            controller: 'TeamCtrl'
+          }
+        }
+      })
+      .state('tab.account', {
+        url: '/team/account',
+        cache: false,
+        views: {
+          'tab-team': {
+            templateUrl: 'templates/account.html',
+            controller: 'AccountCtrl'
+          }
+        }
+      })
+      .state('tab.user', {
+        url: '/team/user/:userId',
+        cache: false,
+        views: {
+          'tab-team': {
             templateUrl: 'templates/user.html',
             controller: 'UserCtrl'
           }
