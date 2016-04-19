@@ -7,6 +7,7 @@
         </ion-refresher>
         <div class="list">
             <div class="item item-divider">
+                <i class="icon ion-chatboxes"></i>
                 Diskuze s novými komentáři
             </div>
             <ion-list>
@@ -24,6 +25,7 @@
         </div>
         <div class="list">
             <div class="item item-divider">
+                <i class="icon ion-android-calendar"></i>
                 Nejbližší akce
             </div>
             <div id="dashboardEvents">
@@ -31,11 +33,11 @@
                     <div ng-if="eventsLoaded < eventsLimit" class="listSpinner">
                         <ion-spinner icon="lines"></ion-spinner>
                     </div>
-                    <ion-item class="" ng-repeat="event in events.slice().reverse() |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/dashboard/events/{{event.id}}">
+                    <ion-item class="" ng-repeat="event in events |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/dashboard/events/{{event.id}}">
                         <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
                         <small>
                         {{event.caption}}<br/>
-                        {{event.startTime | date:"dd.MM.yyyy"}}
+                        {{event.startTime | date:"dd.MM.yyyy HH:mm"}}
                         <span ng-if="event.myAttendance.preStatus" class="badge" ng-class="setAttendanceBadge(event.myAttendance)" ng-bind-html="humanAttendance(event)"></span>
                         </small>
                     </ion-item>
