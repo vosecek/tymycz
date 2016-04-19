@@ -7,17 +7,16 @@
 </ion-nav-buttons>
 
 <ion-content>
-<ion-list>
-<ion-item ng-repeat="(key,value) in users | groupBy: 'status'|orderBy:'displayName'" type="item-text-wrap">
-<ion-item class="item-divider">{{key}}</ion-item>
-<ion-item ng-repeat="(key2,value2) in value | groupBy: 'gender'" type="item-text-wrap">
-<ion-item class="item-divider">{{key2}}</ion-item>
-<ion-item class="item-icon-right" class="item" ng-repeat="user in value2" href="#/tab/team/user/{{user.id}}">
-<h2>{{user.displayName}}</h2>
+<!-- <ion-list> -->
+ <ion-alpha-scroll ng-model="users" key="displayName">
+<!-- <ion-item class="item-icon-right" class="item" ng-repeat="user in users |orderBy:'displayName'" href="#/tab/team/user/{{user.id}}"> -->
+<div class="item-icon-right" ng-click='detail(item.id)'>
+<h2>{{item.displayName}}</h2>
 <i class="icon ion-chevron-right icon-accessory"></i>
-</ion-item>
-</ion-item>
-</ion-item>
-</ion-list>
+</div>
+<!-- <i class="icon ion-chevron-right icon-accessory"></i> -->
+<!-- </ion-item> -->
+</ion-alpha-scroll>
+<!-- </ion-list> -->
 </ion-content>
 </ion-view>
