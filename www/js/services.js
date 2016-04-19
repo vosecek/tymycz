@@ -75,6 +75,7 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
         $ionicLoading.hide();
         return;
       }
+
       connection.get(params, function(data) {
           if (data.status == "OK") {
             callback(data);
@@ -132,6 +133,12 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
       $http.post(url, params)
         .then(function(data) {
           callback(data);
+        },function(response){
+          $ionicLoading.hide();
+          $ionicLoading.show({
+            duration:2000,
+            template:"Chyba při zápisu docházky na server"
+          });
         });
     },
     save: function(connection, callback, params) {
@@ -198,6 +205,9 @@ TS.factory("ListView", [function($resource) {
       data[master] = [];
     },
     add: function(master, value) {
+      if (angular.isUndefined(data[master])) {
+        data[master] = [];
+      }
       data[master].push(value);
     },
     all: function(master) {
