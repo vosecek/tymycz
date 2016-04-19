@@ -81,6 +81,9 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
 
          if (data.status == "OK") {
             loginData.url = loginData.url;
+            $localStorage.$default({
+               freshTeam: false
+            });
             if ($scope.data.saveAccess === true) {
                if (angular.isUndefined($scope.$storage.servers)) {
                   $scope.$storage.servers = [];
@@ -186,6 +189,10 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
       };
 
       ServerLogin.get(loginData, function(data) {
+         $scope.$storage = $localStorage;
+         $scope.$storage.freshTeam = true;
+         $scope.$storage.totalNewPosts = 0;
+         $scope.$storage.serverNewPosts = 0;
             if (data.status == "OK") {
                data.data.pictureUrl = TS.Server.fullUrl() + data.data.pictureUrl;
                TS.User = data.data;
@@ -231,28 +238,29 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
          });
    };
 });
-TC.controller('DashboardCtrl', function($scope, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
+TC.controller('DashboardCtrl', function($scope, $cordovaLocalNotification, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
    $scope.$storage = $localStorage;
 
-   $scope.$on('$ionicView.beforeEnter', function() {
-      $scope.data = {};
-      $scope.data.serverCallName = TS.Server.callName;
-      $scope.doRefresh();
+   $scope.$on('$ionicView.beforeEnter',function(){
+      if($scope.$storage.freshTeam === true){
+         $scope.$storage.freshTeam = true;
+         $scope.doRefresh();
+      }
    });
 
-   $scope.$on("$ionicView.enter", function() {
-      // provadet nacteni novych prispevku ze vsech serveru kazdych X milisekund
-      if (angular.isDefined($scope.refreshNews)) {
-         $interval.cancel($scope.refreshNews);
-      }
+   $scope.$on('$ionicView.loaded', function() {
+      $scope.data = {};
+      $scope.data.serverCallName = TS.Server.callName;
       $scope.refreshNews = $interval(function() {
          $scope.loadNews();
       }, 60000);
+      $scope.doRefresh();
    });
 
    $scope.loadNews = function() {
       $scope.$storage.totalNewPosts = 0;
       $scope.$storage.serverNewPosts = 0;
+
       angular.forEach($scope.$storage.servers, function(server) {
          ServerDiscussions.get({
             url: server.url,
@@ -326,8 +334,6 @@ TC.controller('DashboardCtrl', function($scope, $localStorage, $interval, $rootS
    var events = "events";
    $scope.refreshEvents = function() {
       $scope.events = [];
-      var dashboardEvents = angular.element(document.getElementById('dashboardEvents'));
-      dashboardEvents = $scope.$new(true);
       ServerAPI.get(ServerEvents, function(data) {
          ListView.clear(events);
          for (var i in data.data) {
@@ -412,11 +418,18 @@ TC.controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, S
       });
    };
 });
-TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar) {
+TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar, $state, $filter) {
    $scope.$storage = $localStorage;
    $scope.$on('$ionicView.beforeEnter', function() {
-      $scope.users = $scope.$storage.Users;
+      $scope.users = $filter("orderBy")($scope.$storage.Users, "displayName");
+      // $scope.showFilterBar();
    });
+
+   $scope.detail = function(id) {
+      $state.go("tab.user", {
+         userId: id
+      });
+   };
 
    $scope.showFilterBar = function() {
       filterBarInstance = $ionicFilterBar.show({
@@ -425,7 +438,6 @@ TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar) {
             $scope.users = filteredItems;
          },
          expression: function(filterText, value, index, array) {
-            console.log(value);
             var re = new RegExp(filterText, "gi");
             if (angular.isDefined(value.firstName)) {
                if (value.firstName.match(re)) {
@@ -453,15 +465,23 @@ TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar) {
 
 
 });
-TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window) {
+TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window, $ionicLoading) {
+   $scope.$storage = $localStorage;
    $scope.$on('$ionicView.beforeEnter', function() {
-      ServerAPI.get(ServerUserDetail, function(data) {
-         $scope.data = data.data;
-         console.log($scope.data);
+      $scope.userId = $stateParams.userId;
+      var record = $filter('filter')($scope.$storage.Users, {
+         id: $scope.userId * 1
+      }, true);
+
+      if (angular.isDefined(record[0])) {
+         $scope.data = record[0];
          $scope.data.pictureUrl = TS.Server.fullUrl() + $scope.data.pictureUrl;
-      }, {
-         userId: $stateParams.userId
-      });
+      } else {
+         $ionicLoading.show({
+            template: "user error",
+            duration: 2000
+         });
+      }
    });
    $scope.email = function() {
       var link = "mailto:" + $scope.data.email + "?subject=Tymy.cz";
@@ -739,10 +759,28 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       };
    })
    .controller("DiscussionDetailCtrl", function($scope, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+      $scope.loadedPages = 1;
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
-         $scope.refresh();
+         $scope.refresh(1,true);
       });
+
+      $scope.loadMoreNews = function() {
+         $scope.refresh($scope.loadedPages++);
+      };
+
+      $scope.moreDataCanBeLoaded = function() {
+         var numberOfPages = 0;
+         if (angular.isUndefined($scope.data.paging)) return false;
+         if (angular.isDefined($scope.data.paging.numberOfPgaes)) {
+            numberOfPages = $scope.data.paging.numberOfPgaes;
+         }
+         if (angular.isDefined($scope.data.paging.numberOfPages)) {
+            numberOfPages = $scope.data.paging.numberOfPages;
+         }
+         if ($scope.loadedPages < numberOfPages) return true;
+         return false;
+      };
 
       $scope.textareaStyle = false;
 
@@ -776,11 +814,6 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          template: 'Načítám diskuzi ...'
       });
 
-
-      $scope.doRefresh = function() {
-         $scope.refresh();
-         $scope.$broadcast('scroll.refreshComplete');
-      };
       $scope.post = function() {
          $ionicLoading.show({
             template: 'Odesílám komentář ...'
@@ -792,7 +825,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                duration: 900
             });
             $scope.form.comment = "";
-            $scope.refresh(true);
+            $scope.refresh(1, true);
          }, {
             discussionId: $stateParams.discussionId,
             post: {
@@ -803,23 +836,25 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
 
       $scope.dirtyNews = function() {
          $scope.$storage = $localStorage;
-         $scope.$storage.totalNewPosts -= $scope.data.newPosts;
-         $scope.$storage.serverNewPosts -= $scope.data.newPosts;
+         $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
+         $scope.$storage.serverNewPosts -= $scope.data.discussion.newPosts;
          var record = $filter('filter')($scope.$storage.servers, {
             url: TS.Server.url,
             user: TS.Server.user,
          }, true);
          if (record.length == 1) {
-            record[0].newPosts = record[0].newPosts - $scope.data.newPosts;
+            record[0].newPosts = record[0].newPosts - $scope.data.discussion.newPosts;
          }
       };
 
-      $scope.refresh = function(supressHide) {
-         supressHide = supressHide || false;
+      $scope.refresh = function(page, clearPosts) {
+         page = page || 1;
+         clearPosts = clearPosts || false;
          ServerAPI.get(ServerDiscussionDetail, function(data) {
-            ListView.clear(master);
-            if (supressHide === false) $ionicLoading.hide();
-            $scope.data = data.data.discussion;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+            if (clearPosts === true) ListView.clear(master);
+            $ionicLoading.hide();
+            $scope.data = data.data;
             $scope.dirtyNews();
             for (var i in data.data.posts) {
                if (angular.isDefined(data.data.posts[i].post)) {
@@ -830,7 +865,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.posts = ListView.all(master);
          }, {
             discussionId: $stateParams.discussionId,
-            page: 1
+            page: page
          });
       };
    });
