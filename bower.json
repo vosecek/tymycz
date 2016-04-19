@@ -1,11 +1,12 @@
 {
-   "name": "Tymy.cz",
-   "private": "true",
-   "devDependencies": {
-      "ionic": "driftyco/ionic-bower#1.2.4"
-   },
-   "dependencies": {
-      "angular-md5": "~0.1.10",
-      "ng-focus-if": "~1.0.4"
-   }
+  "name": "Tymy.cz",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.2.4"
+  },
+  "dependencies": {
+    "angular-md5": "~0.1.10",
+    "ng-focus-if": "~1.0.4",
+    "ion-alpha-scroll": "~0.1.3"
+  }
 }
