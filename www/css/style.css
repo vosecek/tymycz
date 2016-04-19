@@ -31,3 +31,16 @@
    color:#888;
    margin-bottom: 1em;
 }
+
+.discussion-post .item {
+   font-size: 85%;
+   line-height: 1.3em;
+}
+
+.discussion-post .item {
+   padding:5px 10px;
+}
+
+.discussion-post .item-body {
+   padding:10px;
+}
