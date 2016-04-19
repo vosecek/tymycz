@@ -1,15 +1,11 @@
-// Ionic Starter App
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-// 
-
-
-angular.module('tymy.cz', ['ngStorage', 'angular.filter', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar'])
+angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter'])
   .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
+
+      // if (device.platform === "iOS") {
+      // window.plugin.notification.local.promptForPermission();
+      // }
+
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
       if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -21,6 +17,9 @@ angular.module('tymy.cz', ['ngStorage', 'angular.filter', 'focus-if', 'monospace
         StatusBar.styleDefault();
       }
     });
+  })
+  .config(function($ionicFilterBarConfigProvider) {
+    $ionicFilterBarConfigProvider.placeholder('Hledej');
   })
   .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -91,7 +90,7 @@ angular.module('tymy.cz', ['ngStorage', 'angular.filter', 'focus-if', 'monospace
       })
       .state('tab.dashboard', {
         url: '/dashboard',
-        cache: false,
+        // cache: false,
         views: {
           'tab-dashboard': {
             templateUrl: 'templates/dashboard.html',
