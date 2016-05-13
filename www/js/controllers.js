@@ -72,7 +72,6 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
       }
 
 
-
       ServerLogin.get(loginData, function(data) {
          // zaregistrovat refresh interval
          if (angular.isDefined($scope.refreshNews)) {
@@ -189,10 +188,10 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
       };
 
       ServerLogin.get(loginData, function(data) {
-         $scope.$storage = $localStorage;
-         $scope.$storage.freshTeam = true;
-         $scope.$storage.totalNewPosts = 0;
-         $scope.$storage.serverNewPosts = 0;
+            $scope.$storage = $localStorage;
+            $scope.$storage.freshTeam = true;
+            $scope.$storage.totalNewPosts = 0;
+            $scope.$storage.serverNewPosts = 0;
             if (data.status == "OK") {
                data.data.pictureUrl = TS.Server.fullUrl() + data.data.pictureUrl;
                TS.User = data.data;
@@ -238,11 +237,12 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
          });
    };
 });
-TC.controller('DashboardCtrl', function($scope, $cordovaLocalNotification, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
+TC.controller('DashboardCtrl', function($scope, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
    $scope.$storage = $localStorage;
 
-   $scope.$on('$ionicView.beforeEnter',function(){
-      if($scope.$storage.freshTeam === true){
+   $scope.$on('$ionicView.beforeEnter', function() {
+      $ionicScrollDelegate.scrollTop();
+      if ($scope.$storage.freshTeam === true) {
          $scope.$storage.freshTeam = true;
          $scope.doRefresh();
       }
@@ -254,7 +254,6 @@ TC.controller('DashboardCtrl', function($scope, $cordovaLocalNotification, $loca
       $scope.refreshNews = $interval(function() {
          $scope.loadNews();
       }, 60000);
-      $scope.doRefresh();
    });
 
    $scope.loadNews = function() {
@@ -762,7 +761,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       $scope.loadedPages = 1;
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
-         $scope.refresh(1,true);
+         $scope.refresh(1, true);
       });
 
       $scope.loadMoreNews = function() {
@@ -801,6 +800,11 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       var master = "discussionDetail";
       $scope.renderHtml = function(html_code) {
          return $sce.trustAsHtml(html_code);
+      };
+      $scope.setClassHeader = function(post) {
+         if (post.newPost == true) {
+            return "positive";
+         }
       };
       $scope.setClass = function(sticky) {
          if (sticky === true) {
