@@ -133,11 +133,11 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
       $http.post(url, params)
         .then(function(data) {
           callback(data);
-        },function(response){
+        }, function(response) {
           $ionicLoading.hide();
           $ionicLoading.show({
-            duration:2000,
-            template:"Chyba při zápisu docházky na server"
+            duration: 2000,
+            template: "Chyba při zápisu docházky na server"
           });
         });
     },
