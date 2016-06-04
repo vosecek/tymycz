@@ -1,0 +1,38 @@
+{
+  "name": "ion-alpha-scroll",
+  "version": "0.1.3",
+  "authors": [
+    "aquint <anthonyquinton92@gmail.com>"
+  ],
+  "description": "Alphabetical indexing and scrolling for ionic lists",
+  "main": "./src/ion-alpha-scroll.js",
+  "keywords": [
+    "ionic",
+    "ion",
+    "angular",
+    "alphabetical",
+    "alphabet",
+    "scrolling",
+    "index"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo.gif"
+  ],
+  "homepage": "https://github.com/aquint/ion-alpha-scroll",
+  "_release": "0.1.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.3",
+    "commit": "84fbfe2a2293eaaad524663210a04880fc27e663"
+  },
+  "_source": "git://github.com/aquint/ion-alpha-scroll.git",
+  "_target": "~0.1.3",
+  "_originalSource": "ion-alpha-scroll",
+  "_direct": true
+}
