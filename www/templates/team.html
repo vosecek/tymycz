@@ -1,22 +1,21 @@
 <ion-view view-title="Tým">
-<ion-nav-buttons side="right">
-<button class="button button-icon ion-android-search" ng-click="showFilterBar()"></button>
-</ion-nav-buttons>
-<ion-nav-buttons side="left">
-<a class="button button-clear icon ion-person" href="#/tab/team/account">Můj účet</a>
-</ion-nav-buttons>
-
-<ion-content>
-<!-- <ion-list> -->
- <ion-alpha-scroll ng-model="users" key="displayName">
-<!-- <ion-item class="item-icon-right" class="item" ng-repeat="user in users |orderBy:'displayName'" href="#/tab/team/user/{{user.id}}"> -->
-<div class="item-icon-right" ng-click='detail(item.id)'>
-<h2>{{item.displayName}}</h2>
-<i class="icon ion-chevron-right icon-accessory"></i>
-</div>
-<!-- <i class="icon ion-chevron-right icon-accessory"></i> -->
-<!-- </ion-item> -->
-</ion-alpha-scroll>
-<!-- </ion-list> -->
-</ion-content>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon ion-android-search" ng-click="showFilterBar()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="left">
+        <a class="button button-clear icon ion-person" href="#/tab/team/account" translate>{{'user.title'}}</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <!-- <ion-list> -->
+        <ion-alpha-scroll ng-model="users" key="displayName">
+            <!-- <ion-item class="item-icon-right" class="item" ng-repeat="user in users |orderBy:'displayName'" href="#/tab/team/user/{{user.id}}"> -->
+            <div class="item-icon-right" ng-click='detail(item.id)'>
+                <h2>{{item.displayName}}</h2>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </div>
+            <!-- <i class="icon ion-chevron-right icon-accessory"></i> -->
+            <!-- </ion-item> -->
+        </ion-alpha-scroll>
+        <!-- </ion-list> -->
+    </ion-content>
 </ion-view>

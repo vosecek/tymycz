@@ -12,7 +12,7 @@
 </button>
 <label class="item item-input" ng-if='event.inFuture === true'>
   <i class="icon ion-compose placeholder-icon"></i>
-  <input type="text" placeholder="Poznámka k účasti" ng-model='myAttendance.preDescription'>
+  <input type="text" translate translate-attr-placeholder="{{placeholder}}" translate-value-browser="{{eventAttendance.placeholder}}" ng-model='myAttendance.preDescription'>
 </label>
 <div class="card">
   <div class="item item-divider">

@@ -1,22 +1,74 @@
-angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter'])
-  .run(function($ionicPlatform) {
+angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter', 'pascalprecht.translate'])
+
+.constant('AppConfig', {
+  version: '0.5.0',
+  lang: "cs",
+  changelog: {
+    "0.5.0": {
+      date: "5.6.2016",
+      items: {
+        cs: ["Vyhledávání v diskuzi", "Příprava pro multijazyčnost v další verzi", "Toast notifikace namísto celoobrazovkových", "Oprava chyby záporných příspěvků po vložení nového příspěvku"]
+      }
+    },
+    "0.4.5": {
+      date: "12.5.2016",
+      items: {
+        cs: ["Označování nových příspěvků v diskuzi", "Při přepnutí serveru se přehled vyroluje nahoru, aby byly vidět diskuze", "Správný počet nových příspěvků celkem po prvním přihášení"]
+      }
+    },
+    "0.4.3": {
+      date: "19.4.2016",
+      items: {
+        cs: ["Opravené datum konce události", "Načítání starších příspěvků v diskuzi nekonečným scrollováním", "Menší odsazení a menší font v diskuzi pro úsporu místa"]
+      }
+    },
+    "0.4.2": {
+      date: "16.3.2016",
+      items: {
+        cs: ["Vylepšený seznam uživatelů, doplněný o index bar"]
+      }
+    },
+    "0.4.1": {
+      date: "15.3.2016",
+      items: {
+        cs: ["Přehled uživatelů s vyhledáváním"]
+      }
+    },
+    "0.4.0": {
+      date: "3.3.2016",
+      items: {
+        cs: ["Přepracování ovládání na záložky namísto menu"]
+      }
+    },
+    "0.3.4": {
+      date: "25.2.2016",
+      items: {
+        cs: ["Beta verze aplikace, určena pro uživatelské testování v rámci frisbee komunity."]
+      }
+    }
+  }
+})
+
+.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
-
-      // if (device.platform === "iOS") {
-      // window.plugin.notification.local.promptForPermission();
-      // }
-
-      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-      // for form inputs)
       if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         cordova.plugins.Keyboard.disableScroll(true);
       }
       if (window.StatusBar) {
-        // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
     });
+  })
+  .config(function($translateProvider, AppConfig) {
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+    $translateProvider.useStaticFilesLoader({
+      prefix: "locale-",
+      suffix: ".json"
+    });
+
+    $translateProvider.preferredLanguage(AppConfig.lang);
+    $translateProvider.fallbackLanguage(AppConfig.lang);
   })
   .config(function($ionicFilterBarConfigProvider) {
     $ionicFilterBarConfigProvider.placeholder('Hledej');
@@ -146,6 +198,5 @@ angular.module('tymy.cz', ['ngStorage', 'focus-if', 'monospaced.elastic', 'angul
           }
         }
       });
-    // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/start/login');
   });

@@ -1,4 +1,16 @@
 var TS = angular.module("tymy.services", ['ngResource']);
+
+function parseHtmlEnteties(str) {
+  if (str.length > 0) {
+    return str.replace(/&#([0-9]{1,3});/gi, function(match, numStr) {
+      var num = parseInt(numStr, 10); // read num as normal number
+      return String.fromCharCode(num);
+    });
+  } else {
+    return str;
+  }
+}
+
 TS.Server = {
   fullUrl: function() {
     return "http://" + this.url;
@@ -22,7 +34,7 @@ TS.factory('ServerEvents', ['$resource', function($resource) {
   });
 }]);
 TS.factory('ServerDiscussionDetail', ['$resource', function($resource, $stateParams) {
-  return $resource('http://:url/api/discussion/:discussionId/html/:page');
+  return $resource('http://:url/api/discussion/:discussionId/html/:page?search=:search');
 }]);
 TS.factory('ServerEventDetail', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/event/:eventId');
@@ -46,27 +58,34 @@ TS.factory('ServerLogin', ['$resource', function($resource, $stateParams) {
   return $resource('http://:url/api/login/:user/:password');
 }]);
 
+TS.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork, $translate, Toast) {
+  return {
+    isOnline: function() {
+      if (ionic.Platform.isWebView()) {
+        return $cordovaNetwork.isOnline();
+      } else {
+        return navigator.onLine;
+      }
+    },
+    ifOffline: function() {
+      if (ionic.Platform.isWebView()) {
+        return !$cordovaNetwork.isOnline();
+      } else {
+        return !navigator.onLine;
+      }
+    },
+    isOffline: function() {
+      $translate("error.offline").then(function(string) {
+        Toast.show(string);
+      });
+    }
+  }
+});
 
 
-TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLogin, $ionicPlatform, $ionicPopup) {
+TS.factory('ServerAPI', function($ionicLoading, $translate, Toast, $state, $http, $filter, ServerLogin, $ionicPlatform, $ionicPopup) {
   var wrapperFunction = {
     get: function(connection, callback, params) {
-      $ionicPlatform.ready(function() {
-        if (window.Connection) {
-          if (navigator.connection.type == Connection.NONE) {
-            $ionicPopup.alert({
-                title: "Internet Disconnected",
-                content: "The internet is disconnected on your device."
-              })
-              .then(function(result) {
-                if (!result) {
-                  ionic.Platform.exitApp();
-                }
-              });
-          }
-        }
-      });
-
       params = params || {};
       params.TSID = TS.Server.TSID;
       params.url = TS.Server.url;
@@ -135,9 +154,8 @@ TS.factory('ServerAPI', function($ionicLoading, $state, $http, $filter, ServerLo
           callback(data);
         }, function(response) {
           $ionicLoading.hide();
-          $ionicLoading.show({
-            duration: 2000,
-            template: "Chyba při zápisu docházky na server"
+          $translate("attendance.error").then(function(string) {
+            Toast.show(string);
           });
         });
     },
@@ -227,3 +245,36 @@ TS.factory("ListView", [function($resource) {
     }
   };
 }]);
+
+TS.factory('Toast', function($sce, $rootScope, $ionicLoading, $timeout, $ionicPopup, $cordovaToast) {
+  return {
+    show: function(message, duration, position) {
+      message = message || "Connection error";
+      duration = duration || 'short';
+      position = position || 'bottom';
+
+      message = parseHtmlEnteties(message);
+      $ionicLoading.hide();
+
+      if (!!window.cordova) {
+        $cordovaToast.show(message, duration, position);
+      } else {
+        if (duration == 'short') {
+          duration = 2000;
+        } else {
+          duration = 5000;
+        }
+
+        var myPopup = $ionicPopup.show({
+          template: "<div class='toast'>" + message + "</div>",
+          scope: $rootScope,
+          buttons: []
+        });
+
+        $timeout(function() {
+          myPopup.close();
+        }, duration);
+      }
+    }
+  };
+})

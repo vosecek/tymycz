@@ -1,107 +1,27 @@
-test
- <ion-nav-bar class="bar-royal bar" align-title="center">
+<ion-nav-bar class="bar-royal bar" align-title="center">
     <ion-nav-back-button class="button-clear">
     </ion-nav-back-button>
-  </ion-nav-bar>
-
+</ion-nav-bar>
 <ion-view title="O aplikaci">
-<ion-content overflow-scroll="true" padding="true" class="has-header">
-
-<ion-list>
-<ion-item class="item-icon-left"><i class="icon ion-ios-information"></i>verze 0.4.5</ion-item>
-<ion-item ng-click="email('jiri.vosecek@gmail.com')" class="item-icon-left"><i class="icon ion-at"></i>jiri.vosecek@gmail.com</ion-item>
-</ion-list>
-
-
-<div class="list card">
-  <div class="item item-body">
-Aplikace funguje zatím pouze na týmy umístěné na placeném serveru tymy.cz, více informací o placeném serveru (50 kč/tým/měsíc) na <a href="mailto:admin@tymy.cz">admin@tymy.cz</a>
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.4.5</h2>
-    <p>12.5.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Označování nových příspěvků v diskuzi
-  </div>
-  <div class="item item-body">
-    Při přepnutí serveru se přehled vyroluje nahoru, aby byly vidět diskuze
-  </div>
-  <div class="item item-body">
-  Správný počet nových příspěvků celkem po prvním přihášení
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.4.3</h2>
-    <p>19.4.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Opravené datum konce události
-  </div>
-  <div class="item item-body">
-  Načítání starších příspěvků v diskuzi nekonečným scrollováním
-  </div>
-  <div class="item item-body">
-  Menší odsazení a menší font v diskuzi pro úsporu místa
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.4.2</h2>
-    <p>16.3.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Vylepšený seznam uživatelů, doplněný o index bar
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.4.1</h2>
-    <p>15.3.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Přehled uživatelů s vyhledáváním
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.4.0</h2>
-    <p>3.3.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Přepracování ovládání na záložky namísto menu
-  </div>
-</div>
-
-<div class="list card">
-  <div class="item item-avatar">
-    <img src="img/icon.png">
-    <h2>Verze 0.3.4</h2>
-    <p>25.2.2016</p>
-  </div>
-
-  <div class="item item-body">
-    Beta verze aplikace, určena pro uživatelské testování v rámci frisbee komunity.
-  </div>
-</div>
-
-</ion-content>
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+        <ion-list>
+            <ion-item class="item-icon-left"><i class="icon ion-ios-information"></i>verze {{version}}</ion-item>
+            <ion-item ng-click="email('jiri.vosecek@gmail.com')" class="item-icon-left"><i class="icon ion-at"></i>jiri.vosecek@gmail.com</ion-item>
+        </ion-list>
+        <div class="list card">
+            <div class="item item-body">
+                Aplikace funguje zatím pouze na týmy umístěné na placeném serveru tymy.cz, více informací o placeném serveru (50 kč/tým/měsíc) na <a href="mailto:admin@tymy.cz">admin@tymy.cz</a>
+            </div>
+        </div>
+        <div class="list card" ng-repeat="(version, data) in changelog">
+            <div class="item item-avatar">
+                <img src="img/icon.png">
+                <h2>{{version}}</h2>
+                <p>{{data.date}}</p>
+            </div>
+            <div class="item item-body" ng-repeat="(key,item) in data.items.cs">
+                {{item}}
+            </div>
+        </div>
+    </ion-content>
 </ion-view>

@@ -1,0 +1,84 @@
+{
+	"general": {
+		"unknownGender": "nenastaveno",
+		"isOffline": "Nezdařilo se připojení k internetu",
+		"switch": "Připojuji k",
+		"refresher": "Tažením aktualizujte",
+		"back": "Zpět"
+	},
+	"dashboard": {
+		"title": "Přehled",
+		"discussionsWithNewComments": "Diskuze s novými komentáři",
+		"allDiscussions": "Všechny diskuze",
+		"closestEvents": "Nejbližší akce",
+		"allEvents": "Všechny akce"
+	},
+	"login": {
+		"title": "Přihlášení",
+		"login": "Přihlašuji",
+		"newTeamSaved": "Nový tým uložen, v nastavení týmů můžeš provést další úpravy",
+		"notSupported": "Neexistující adresa, nebo nepodporovaný tým. Podpora je zatím pro placené týmy.",
+		"logout": "Odhlašuji",
+		"form": {
+			"server": "Web (bez tymy.cz)",
+			"username": "Uživ. jméno",
+			"password": "Heslo",
+			"saveAccess": "Uložit údaje",
+			"button": "Přihlásit"
+		}
+	},
+	"attendance": {
+		"updated": "Účast aktualizována",
+		"error": "Chyba při zápisu docházky na server"
+	},
+	"user": {
+		"title": "Můj účet",
+		"error": "Chyba načítání dat o uživateli",
+		"teamRemoved": "Tým odstraněn",
+		"updated": "Aktualizováno",
+		"newAutoLogin": "Automatické přihlášení zrušeno u týmu:",
+		"lastLogin": "Poslední přihlášení",
+		"teamData": {
+			"address": "Adresa",
+			"callName": "Označení",
+			"username": "Uživatelské jméno",
+			"newPassword": "Nové heslo",
+			"autoLogin": "Automatické přihlášení",
+			"button": "Uložit"
+		}
+	},
+	"discussion": {
+		"search": {
+			"title": "Prohledat diskuzi",
+			"button": "Hledej",
+			"user": "Uživatel",
+			"anyone": "kdokoli",
+			"string": "Hledat:",
+			"button": "Vyhledat",
+			"reset": "Zrušit hledání",
+			"resultFor": "Vyhledáno na dotaz"
+		},
+		"loading": "Načítám diskuzi",
+		"sending": "Odesílám komentář ...",
+		"saved": "Příspěvek vložen",
+		"form": {
+			"placeholder": "Nový příspěvek",
+			"newPost": "Vložit"
+		}
+	},
+	"eventAttendance": {
+		"placeholder": "Poznámka k účasti"
+	},
+	"discussions": {
+		"title": "Diskuze"
+	},
+	"events": {
+		"title": "Události"
+	},
+	"about": {
+		"title": "O aplikaci"
+	},
+	"team": {
+		"title": "Tým"
+	}
+}

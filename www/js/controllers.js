@@ -8,10 +8,13 @@ window.addEventListener('native.keyboardshow', function() {
    TC.keyboardOpen = true;
 });
 
-TC.controller('AboutCtrl', function($scope, $window) {
+TC.controller('AboutCtrl', function($scope, $window, AppConfig) {
    $scope.$on('$ionicView.beforeEnter', function(event, viewData) {
       viewData.enableBack = true;
    });
+
+   $scope.changelog = AppConfig.changelog;
+   $scope.version = AppConfig.version;
 
    $scope.email = function(email) {
       var link = "mailto:" + email + "?subject=Tymy.cz aplikace";
@@ -19,8 +22,14 @@ TC.controller('AboutCtrl', function($scope, $window) {
    };
 });
 
-TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
+TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $translate, md5, ServerUsers, ServerEventTypes, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
    $scope.$storage = $localStorage;
+
+   $translate("general.back").then(function(string) {
+      $ionicConfig.backButton.text(parseHtmlEnteties(string));
+   });
+
+
 
    $scope.$on('$ionicView.loaded', function() {
       var record = $filter('filter')($scope.$storage.servers, {
@@ -49,7 +58,9 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
       loginData = loginData || false;
       var newTeam = false;
       $ionicLoading.show({
-         template: "Přihlašuji ...",
+         template: $translate("login.login").then(function(string) {
+            return string;
+         })
       });
 
       TS.Server.TSID = false;
@@ -94,8 +105,8 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
 
                if (record.length === 0) {
                   $scope.$storage.servers.push(loginData);
-                  $ionicLoading.show({
-                     template: "Nový tým uložen, v nastavení týmů můžeš provést další úpravy"
+                  $translate("error.offline").then(function(string) {
+                     Toast.show(string);
                   });
                   newTeam = true;
                }
@@ -108,7 +119,11 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
             ServerAPI.get(ServerUsers, function(data) {
                $scope.$storage.Users = data.data;
                angular.forEach($scope.$storage.Users, function(obj) {
-                  if (angular.isUndefined(obj.gender)) obj.gender = "nenastaveno";
+                  if (angular.isUndefined(obj.gender)) {
+                     $translate("general.unknownGender").then(function(string) {
+                        obj.gender = string;
+                     });
+                  }
                });
             });
 
@@ -133,22 +148,20 @@ TC.controller('LoginCtrl', function($scope, md5, ServerUsers, ServerEventTypes, 
          }
       }, function(error) {
          if (error.status == "404") {
-            $ionicLoading.show({
-               template: "Neznámá adresa " + TS.Server.url + "<br />Podporovány jsou zatím pouze týmy na placeném serveru.",
-               duration: 3000
+            $translate("login.notSupported").then(function(string) {
+               Toast.show(string);
             });
          }
          if (error.status == "0") {
-            $ionicLoading.show({
-               template: "Nezdařilo se připojení k internetu",
-               duration: 3000
+            $translate("general.isOffline").then(function(string) {
+               Toast.show(string);
             });
          }
       });
    };
 });
 
-TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTypes, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
+TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUsers, ServerEventTypes, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
    $scope.$storage = $localStorage;
    $scope.data = {};
 
@@ -177,8 +190,8 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
       TS.Server.TSID = false;
       $scope.data.saveAccess = false;
 
-      $ionicLoading.show({
-         template: "Připojuji k " + team.url
+      $translate("login.switch").then(function(string) {
+         Toast.show(string + team.url);
       });
 
       var loginData = {
@@ -201,7 +214,11 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
                ServerAPI.get(ServerUsers, function(data) {
                   $scope.$storage.Users = data.data;
                   angular.forEach($scope.$storage.Users, function(obj) {
-                     if (angular.isUndefined(obj.gender)) obj.gender = "nenastaveno";
+                     if (angular.isUndefined(obj.gender)) {
+                        $translate("general.unknownGender").then(function(string) {
+                           obj.gender = string;
+                        });
+                     }
                   });
                });
 
@@ -224,10 +241,7 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
                   $ionicSideMenuDelegate.toggleRight();
                }, 500);
             } else {
-               $ionicLoading.show({
-                  template: data.statusMessage,
-                  duration: 2000
-               });
+               Toast.show(data.statusMessage);
                $state.go('start.login');
             }
          },
@@ -237,7 +251,7 @@ TC.controller('TabCtrl', function($scope, ServerAPI, ServerUsers, ServerEventTyp
          });
    };
 });
-TC.controller('DashboardCtrl', function($scope, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
+TC.controller('DashboardCtrl', function($scope, Toast, $translate, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
    $scope.$storage = $localStorage;
 
    $scope.$on('$ionicView.beforeEnter', function() {
@@ -297,9 +311,8 @@ TC.controller('DashboardCtrl', function($scope, $ionicScrollDelegate, $localStor
 
       ServerAPI.http(ServerAttendance, function(data) {
          ServerAPI.get(ServerEventDetail, function(data) {
-            $ionicLoading.show({
-               template: "Účast aktualizována",
-               duration: 500
+            $translate("attendance.updated").then(function(string) {
+               Toast.show(string);
             });
             $ionicListDelegate.closeOptionButtons();
             var record = $filter('filter')($scope.events, {
@@ -421,7 +434,6 @@ TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar, $stat
    $scope.$storage = $localStorage;
    $scope.$on('$ionicView.beforeEnter', function() {
       $scope.users = $filter("orderBy")($scope.$storage.Users, "displayName");
-      // $scope.showFilterBar();
    });
 
    $scope.detail = function(id) {
@@ -464,7 +476,7 @@ TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar, $stat
 
 
 });
-TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window, $ionicLoading) {
+TC.controller('UserCtrl', function($scope, Toast, $translate, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window, $ionicLoading) {
    $scope.$storage = $localStorage;
    $scope.$on('$ionicView.beforeEnter', function() {
       $scope.userId = $stateParams.userId;
@@ -476,10 +488,10 @@ TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localSt
          $scope.data = record[0];
          $scope.data.pictureUrl = TS.Server.fullUrl() + $scope.data.pictureUrl;
       } else {
-         $ionicLoading.show({
-            template: "user error",
-            duration: 2000
+         $translate("user.error").then(function(string) {
+            Toast.show(string);
          });
+
       }
    });
    $scope.email = function() {
@@ -487,7 +499,7 @@ TC.controller('UserCtrl', function($scope, ServerAPI, ServerUserDetail, $localSt
       $window.location.href = link;
    };
 });
-TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
+TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
    $scope.$storage = $localStorage;
 
    $scope.$on('$ionicView.beforeEnter', function() {
@@ -496,16 +508,16 @@ TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filte
    });
 
    $scope.logout = function() {
-      $ionicLoading.show({
-         template: "Logging out"
+      $translate("login.logout").then(function(string) {
+         Toast.show(string);
       });
+
       $timeout(function() {
          $ionicHistory.clearCache();
          $ionicHistory.clearHistory();
          $state.go('start.login', {}, {
             reload: true
          });
-         $ionicLoading.hide();
       }, 100);
    };
 
@@ -517,10 +529,10 @@ TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filte
       var index = $scope.$storage.servers.indexOf(record[0]);
       $scope.$storage.servers.splice(index, 1);
       $scope.closeModal();
-      $ionicLoading.show({
-         template: "Team removed",
-         duration: 2000
+      $translate("user.teamRemoved").then(function(string) {
+         Toast.show(string);
       });
+
    };
 
    $ionicModal.fromTemplateUrl('templates/team-configuration.html', {
@@ -540,9 +552,8 @@ TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filte
    };
 
    $scope.saveData = function() {
-      $ionicLoading.show({
-         template: "Aktualizováno",
-         duration: 2000
+      $translate("user.updated").then(function(string) {
+         Toast.show(string);
       });
       var record = $filter('filter')($scope.$storage.servers, {
          url: $scope.data.url,
@@ -554,9 +565,8 @@ TC.controller('AccountCtrl', function($scope, $ionicModal, $localStorage, $filte
       if ($scope.data.autoLogin === true) {
          angular.forEach($scope.$storage.servers, function(obj) {
             if (obj.autoLogin === true && (obj.url !== record[0].url || obj.user !== record[0].user)) {
-               $ionicLoading.show({
-                  template: "Auto login zrusen u tymu: " + obj.callName,
-                  duration: 2000
+               $translate("user.newAutoLogin").then(function(string) {
+                  Toast.show(string + " " + obj.callName);
                });
             }
             obj.autoLogin = false;
@@ -627,11 +637,15 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          });
       };
    })
-   .controller("EventDetailCtrl", function($ionicConfig, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
+   .controller("EventDetailCtrl", function($ionicConfig, $translate, Toast, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
       $scope.$storage = $localStorage;
-      $scope.$on('$ionicView.beforeEnter', function(event, viewData) {
 
+      $scope.placeholder = "";
+      $translate("eventAttendance.placeholder").then(function(string) {
+         $scope.placeholder = parseHtmlEnteties(string);
       });
+
+
       $scope.$on('$ionicView.enter', function(event, viewData) {
          $scope.$watch('myAttendance.preDescription', function(newValue, oldValue) {
             if (typeof oldValue != "undefined" && oldValue.length > 0 && newValue !== oldValue) {
@@ -713,9 +727,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          }];
 
          ServerAPI.http(ServerAttendance, function(data) {
-            $ionicLoading.show({
-               template: "Účast aktualizována",
-               duration: 500
+            $translate("attendance.updated").then(function(string) {
+               Toast.show(string);
             });
             $scope.refresh();
          }, angular.toJson(data));
@@ -757,13 +770,62 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          return $sce.trustAsHtml(html_code);
       };
    })
-   .controller("DiscussionDetailCtrl", function($scope, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+   .controller("DiscussionDetailCtrl", function($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
       $scope.loadedPages = 1;
+      $scope.modal = false;
+      $scope.$storage = $localStorage;
+      $scope.users = $scope.$storage.Users;
+      // $translate("discussion.search.anyone").then(function(string) {
+      //    $scope.users.unshift({
+      //       id: 0,
+      //       callName: " " + parseHtmlEnteties(string)
+      //    });
+      // });
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
-         $scope.refresh(1, true);
+         $scope.resetLookup();
       });
 
+      $scope.search = {
+         user: 0,
+         string: ""
+      }
+
+      $scope.resetLookup = function() {
+         $scope.search.string = "";
+         $scope.search.user = 0;
+         $scope.refresh(1, true);
+      }
+
+      $scope.lookup = function() {
+         $scope.closeModal();
+         $scope.refresh(1, true);
+      };
+
+      $ionicModal.fromTemplateUrl('templates/discussion-search.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+         })
+         .then(function(modal) {
+            $scope.modal = modal;
+         });
+
+      $scope.showSearch = function() {
+         $scope.openModal();
+      };
+
+      $scope.openModal = function() {
+         $scope.modal.show();
+      };
+
+      $scope.closeModal = function() {
+         $scope.modal.hide();
+      };
+
+      $scope.placeholder = "";
+      $translate("discussion.form.placeholder").then(function(string) {
+         $scope.placeholder = parseHtmlEnteties(string);
+      });
       $scope.loadMoreNews = function() {
          $scope.refresh($scope.loadedPages++);
       };
@@ -771,9 +833,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       $scope.moreDataCanBeLoaded = function() {
          var numberOfPages = 0;
          if (angular.isUndefined($scope.data.paging)) return false;
-         if (angular.isDefined($scope.data.paging.numberOfPgaes)) {
-            numberOfPages = $scope.data.paging.numberOfPgaes;
-         }
+
          if (angular.isDefined($scope.data.paging.numberOfPages)) {
             numberOfPages = $scope.data.paging.numberOfPages;
          }
@@ -814,19 +874,28 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
           * @todo  oznacovat autorovy prispevky necim
           */
       };
-      $ionicLoading.show({
-         template: 'Načítám diskuzi ...'
+
+      $translate("discussion.loading").then(function(string) {
+         $ionicLoading.show({
+            template: string
+         });
       });
 
+
       $scope.post = function() {
-         $ionicLoading.show({
-            template: 'Odesílám komentář ...'
+         $translate("discussion.sending").then(function(string) {
+            $ionicLoading.show({
+               template: string
+            });
          });
+
          ServerAPI.save(ServerDiscussionPost, function(data) {
             $scope.posts = ListView.all(master);
-            $ionicLoading.show({
-               template: "Příspěvek vložen",
-               duration: 900
+            $translate("discussion.saved").then(function(string) {
+               $ionicLoading.show({
+                  template: string,
+                  duration: 900
+               });
             });
             $scope.form.comment = "";
             $scope.refresh(1, true);
@@ -839,9 +908,12 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
       };
 
       $scope.dirtyNews = function() {
-         $scope.$storage = $localStorage;
-         $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
-         $scope.$storage.serverNewPosts -= $scope.data.discussion.newPosts;
+         if ($scope.$storage.totalNewPosts > 0) {
+            $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
+         }
+         if ($scope.$storage.serverNewPosts > 0) {
+            $scope.$storage.serverNewPosts -= $scope.data.discussion.newPosts;
+         }
          var record = $filter('filter')($scope.$storage.servers, {
             url: TS.Server.url,
             user: TS.Server.user,
@@ -869,7 +941,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.posts = ListView.all(master);
          }, {
             discussionId: $stateParams.discussionId,
-            page: page
+            page: page,
+            search: $scope.search.string
          });
       };
    });

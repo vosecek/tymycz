@@ -3,12 +3,12 @@
         {{data.serverCallName}}
     </ion-nav-title>
     <ion-content>
-        <ion-refresher pulling-text="Pull to refresh" on-refresh="doRefresh()">
+        <ion-refresher pulling-text="{{'general.refresher'|translate}}" on-refresh="doRefresh()">
         </ion-refresher>
         <div class="list">
             <div class="item item-divider">
                 <i class="icon ion-chatboxes"></i>
-                Diskuze s novými komentáři
+                <span translate>{{'dashboard.discussionsWithNewComments'}}</span>
             </div>
             <ion-list>
                 <ion-item class="" ng-repeat="discussion in discussions | orderBy:'newPosts'| filter:newPosts" type="item-text-wrap" href="#/tab/dashboard/discussions/{{discussion.id}}">
@@ -18,15 +18,15 @@
                 </ion-item>
             </ion-list>
             <div class="item item-divider">
-                <button class='button button-calm button-full' ng-click="go('tab.discussions')">
-                    Všechny diskuze
+                <button class='button button-calm button-block' ng-click="go('tab.discussions')" translate>
+                    {{'dashboard.allDiscussions'}}
                 </button>
             </div>
         </div>
         <div class="list">
             <div class="item item-divider">
                 <i class="icon ion-android-calendar"></i>
-                Nejbližší akce
+                <span translate>{{'dashboard.closestEvents'}}</span>
             </div>
             <div id="dashboardEvents">
                 <ion-list>
@@ -44,8 +44,8 @@
                 </ion-list>
             </div>
             <div class="item item-divider">
-                <button class='button button-positive button-full' ng-click="go('tab.events')">
-                    Všechny události
+                <button class='button button-positive button-block' ng-click="go('tab.events')" translate>
+                    {{'dashboard.allEvents'}}
                 </button>
             </div>
         </div>

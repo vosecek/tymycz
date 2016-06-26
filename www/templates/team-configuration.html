@@ -12,38 +12,40 @@
         <form class="list">
             <ion-list>
                 <label class="item item-input">
-                    <span class="input-label">
-                        Adresa
+                    <span class="input-label" translate>
+                        {{'user.teamData.address'}}
                     </span>
                     <input ng-model='data.url' type="text" ng-readonly="true" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">
-                        Call name
+                    <span class="input-label" translate>
+                        {{'user.teamData.callName'}}
                     </span>
-                    <input ng-model='data.callName' type="text" placeholder="Your abbr" />
+                    <input ng-model='data.callName' type="text" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">
-                        Username
+                    <span class="input-label" translate>
+                        {{'user.teamData.username'}}
                     </span>
-                    <input ng-model='data.user' type="text" placeholder="login" />
+                    <input ng-model='data.user' type="text" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">
-                        New password
+                    <span class="input-label" translate>
+                        {{'user.teamData.newPassword'}}
                     </span>
-                    <input ng-model='data.password' type="password" placeholder="put updated password" />
+                    <input ng-model='data.password' type="password"  />
                 </label>
                 <ion-toggle ng-model="data.autoLogin" toggle-class="toggle-calm">
-                    Auto login
+                    <span translate>{{'user.teamData.autoLogin'}}</span>
                 </ion-toggle>
             </ion-list>
             <div class="spacer" style="height: 40px;">
             </div>
-            <button class="button button-full icon ionn-save-a button-positive" ng-click="saveData()">
-                Save
+            <div class='padding'>
+            <button class="button button-block icon ionn-save-a button-positive" ng-click="saveData()">
+                <span translate>{{'user.teamData.button'}}</span>
             </button>
+            </div>
         </form>
     </ion-content>
 </ion-modal-view>
