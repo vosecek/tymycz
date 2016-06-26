@@ -1,0 +1,26 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <a class="button button-clear icon ion-android-arrow-back" ng-click="closeModal()">
+        </a>
+        <h1 class="title" translate>
+            {{'discussion.search.title'}}
+        </h1>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <!-- <label class="item item-select" name="gateway">
+                <span class="input-label" translate>{{'discussion.search.user'}}</span>
+                <select ng-model='search.user' ng-options="user.callName for user in users|orderBy:'callName'" ng-init='search.user = users[0]'></select>
+            </label> -->
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="search" ng-model='search.string' autofocus>
+            </label>
+            <div class='padding'>
+                <button class="button button-block icon ionn-save-a button-positive" ng-click="lookup()">
+                    <span translate>{{'discussion.search.button'}}</span>
+                </button>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>
