@@ -1,5 +1,13 @@
 {
   "name": "tymycz",
   "app_id": "f3625248",
-  "disablePushNotifications":true
+  "disablePushNotifications": true,
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }

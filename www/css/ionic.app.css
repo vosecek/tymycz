@@ -9730,3 +9730,44 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+.searchResult button {
+  margin-bottom: .5em; }
+
+.card {
+  margin: .8em 0em; }
+
+.center {
+  text-align: center; }
+
+.listSpinner {
+  text-align: center;
+  padding: 1em; }
+
+.fr {
+  float: right; }
+
+.displayName {
+  text-align: center; }
+
+.userImage {
+  padding: .3em;
+  display: block;
+  box-shadow: 0px -1px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em; }
+
+.lastLogin {
+  text-align: center;
+  font-size: smaller;
+  color: #888;
+  margin-bottom: 1em; }
+
+.discussion-post .item {
+  font-size: 85%;
+  line-height: 1.3em;
+  padding: 5px 10px; }
+  .discussion-post .item .item-body {
+    padding: 10px; }

@@ -21,10 +21,8 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    {
-      "locator": "https://github.com/willyboy/cordova-plugin-local-notifications.git",
-      "id": "de.appplant.cordova.plugin.local-notification-ios9-fix"
-    }
+    "cordova-plugin-x-toast",
+    "cordova-plugin-network-information"
   ],
   "cordovaPlatforms": [
     "ios",
