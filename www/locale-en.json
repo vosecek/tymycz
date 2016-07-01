@@ -1,84 +1,84 @@
 {
 	"general": {
-		"unknownGender": "nenastaveno",
-		"isOffline": "Nezdařilo se připojení k internetu",
-		"switch": "Připojuji k",
-		"refresher": "Tažením aktualizujte",
-		"back": "Zpět"
+		"unknownGender": "not set",
+		"isOffline": "Unable to connect to internet",
+		"switch": "Connecting to",
+		"refresher": "Pull down to update",
+		"back": "Back"
 	},
 	"dashboard": {
-		"title": "Přehled",
-		"discussionsWithNewComments": "Diskuze s novými komentáři",
-		"allDiscussions": "Všechny diskuze",
-		"closestEvents": "Nejbližší akce",
-		"allEvents": "Všechny akce"
+		"title": "Overview",
+		"discussionsWithNewComments": "Discussions with new comments",
+		"allDiscussions": "All discussions",
+		"closestEvents": "Nearest events",
+		"allEvents": "All events"
 	},
 	"login": {
-		"title": "Přihlášení",
-		"login": "Přihlašuji",
-		"newTeamSaved": "Nový tým uložen, v nastavení týmů můžeš provést další úpravy",
-		"notSupported": "Neexistující adresa, nebo nepodporovaný tým. Podpora je zatím pro placené týmy.",
-		"logout": "Odhlašuji",
+		"title": "Login",
+		"login": "Logging in",
+		"newTeamSaved": "New team was saved, you can modify it in team settings",
+		"notSupported": "Non-existent URL or unsupported team. The app is available only for paying teams.",
+		"logout": "Logging out",
 		"form": {
-			"server": "Web (bez tymy.cz)",
-			"username": "Uživ. jméno",
-			"password": "Heslo",
-			"saveAccess": "Uložit údaje",
-			"button": "Přihlásit"
+			"server": "Web (without tymy.cz)",
+			"username": "Username",
+			"password": "Password",
+			"saveAccess": "Save credentials",
+			"button": "Login"
 		}
 	},
 	"attendance": {
-		"updated": "Účast aktualizována",
-		"error": "Chyba při zápisu docházky na server"
+		"updated": "Attendance updated",
+		"error": "Error on entering attendance to the server"
 	},
 	"user": {
-		"title": "Můj účet",
-		"error": "Chyba načítání dat o uživateli",
-		"teamRemoved": "Tým odstraněn",
-		"updated": "Aktualizováno",
-		"newAutoLogin": "Automatické přihlášení zrušeno u týmu:",
-		"lastLogin": "Poslední přihlášení",
+		"title": "My account",
+		"error": "Error on loading user data",
+		"teamRemoved": "Team removed successfully",
+		"updated": "Updated",
+		"newAutoLogin": "Autologin disabled for team:",
+		"lastLogin": "Last login",
 		"teamData": {
-			"address": "Adresa",
-			"callName": "Označení",
-			"username": "Uživatelské jméno",
-			"newPassword": "Nové heslo",
-			"autoLogin": "Automatické přihlášení",
-			"button": "Uložit"
+			"address": "Address",
+			"callName": "Nickname",
+			"username": "Username",
+			"newPassword": "New Password",
+			"autoLogin": "Autologin",
+			"button": "Save"
 		}
 	},
 	"discussion": {
 		"search": {
-			"title": "Prohledat diskuzi",
-			"button": "Hledej",
-			"user": "Uživatel",
-			"anyone": "kdokoli",
-			"string": "Hledat:",
-			"button": "Vyhledat",
-			"reset": "Zrušit hledání",
-			"resultFor": "Vyhledáno na dotaz"
+			"title": "Search discussion",
+			"button": "Search",
+			"user": "User",
+			"anyone": "Anyone",
+			"string": "Searched Text:",
+			"button": "Search",
+			"reset": "Reset",
+			"resultFor": "Results"
 		},
-		"loading": "Načítám diskuzi",
-		"sending": "Odesílám komentář ...",
-		"saved": "Příspěvek vložen",
+		"loading": "Loading discussion",
+		"sending": "Sending comment ...",
+		"saved": "Comment added",
 		"form": {
-			"placeholder": "Nový příspěvek",
-			"newPost": "Vložit"
+			"placeholder": "New comment",
+			"newPost": "Submit"
 		}
 	},
 	"eventAttendance": {
-		"placeholder": "Poznámka k účasti"
+		"placeholder": "Comment"
 	},
 	"discussions": {
-		"title": "Diskuze"
+		"title": "Discussions"
 	},
 	"events": {
-		"title": "Události"
+		"title": "Events"
 	},
 	"about": {
-		"title": "O aplikaci"
+		"title": "About"
 	},
 	"team": {
-		"title": "Tým"
+		"title": "Team"
 	}
 }
