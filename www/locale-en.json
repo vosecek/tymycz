@@ -36,14 +36,14 @@
 		"error": "Error on loading user data",
 		"teamRemoved": "Team removed successfully",
 		"updated": "Updated",
-		"newAutoLogin": "Autologin disabled for team:",
+		"newAutoLogin": "Loging in automatically disabled for team:",
 		"lastLogin": "Last login",
 		"teamData": {
 			"address": "Address",
 			"callName": "Nickname",
 			"username": "Username",
 			"newPassword": "New Password",
-			"autoLogin": "Autologin",
+			"autoLogin": "Login automatically",
 			"button": "Save"
 		}
 	},

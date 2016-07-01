@@ -1,84 +1,84 @@
 {
 	"general": {
-		"unknownGender": "nenastaveno",
-		"isOffline": "Nezdařilo se připojení k internetu",
-		"switch": "Připojuji k",
-		"refresher": "Tažením aktualizujte",
-		"back": "Zpět"
+		"unknownGender": "pas rempli",
+		"isOffline": "Impossible de se connecter à Internet",
+		"switch": "Connecté à",
+		"refresher": "Tirer vers le bas pour mettre à jour",
+		"back": "Retour"
 	},
 	"dashboard": {
-		"title": "Přehled",
-		"discussionsWithNewComments": "Diskuze s novými komentáři",
-		"allDiscussions": "Všechny diskuze",
-		"closestEvents": "Nejbližší akce",
-		"allEvents": "Všechny akce"
+		"title": "Tableau",
+		"discussionsWithNewComments": "Discussions avec nouveaux commentaires",
+		"allDiscussions": "Toutes les discussions",
+		"closestEvents": "Les événements les plus proches",
+		"allEvents": "Tous les événements"
 	},
 	"login": {
-		"title": "Přihlášení",
-		"login": "Přihlašuji",
-		"newTeamSaved": "Nový tým uložen, v nastavení týmů můžeš provést další úpravy",
-		"notSupported": "Neexistující adresa, nebo nepodporovaný tým. Podpora je zatím pro placené týmy.",
-		"logout": "Odhlašuji",
+		"title": "Identifiez-vous",
+		"login": "Identifiez=vous",
+		"newTeamSaved": "Une nouvelle équipe a été enregistré. Vous pouvez le modifier dans l'ajustement de l'équipe",
+		"notSupported": "L'address n'existe pas ou l'équipe n'est pas supportée. Le logiciel est disponible seulement pour les équipe payant.",
+		"logout": "Déconnecté",
 		"form": {
-			"server": "Web (bez tymy.cz)",
-			"username": "Uživ. jméno",
-			"password": "Heslo",
-			"saveAccess": "Uložit údaje",
-			"button": "Přihlásit"
+			"server": "Web (sans tymy.cz)",
+			"username": "Nom d'tilisateur",
+			"password": "Mot de passe",
+			"saveAccess": "Enregistrer les informations d'identification",
+			"button": "Identifiez-vous"
 		}
 	},
 	"attendance": {
-		"updated": "Účast aktualizována",
-		"error": "Chyba při zápisu docházky na server"
+		"updated": "Participation était mis à jour",
+		"error": "Erreur en entrant la participation sur le serveur"
 	},
 	"user": {
-		"title": "Můj účet",
-		"error": "Chyba načítání dat o uživateli",
-		"teamRemoved": "Tým odstraněn",
-		"updated": "Aktualizováno",
-		"newAutoLogin": "Automatické přihlášení zrušeno u týmu:",
-		"lastLogin": "Poslední přihlášení",
+		"title": "Mon compte",
+		"error": "Erreur sur les données de l'utilisateur",
+		"teamRemoved": "Team supprimé avec succès",
+		"updated": "Mis à jour",
+		"newAutoLogin": "Connection automatique désactivé pour l'équipe:",
+		"lastLogin": "Dernière connexion",
 		"teamData": {
-			"address": "Adresa",
-			"callName": "Označení",
-			"username": "Uživatelské jméno",
-			"newPassword": "Nové heslo",
-			"autoLogin": "Automatické přihlášení",
-			"button": "Uložit"
+			"address": "Adresse",
+			"callName": "Surnom",
+			"username": "Nom d'utilisateur",
+			"newPassword": "Nouveau mot de passe",
+			"autoLogin": "Se connecter automatiquement",
+			"button": "Enregistré"
 		}
 	},
 	"discussion": {
 		"search": {
-			"title": "Prohledat diskuzi",
-			"button": "Hledej",
-			"user": "Uživatel",
-			"anyone": "kdokoli",
-			"string": "Hledat:",
-			"button": "Vyhledat",
-			"reset": "Zrušit hledání",
-			"resultFor": "Vyhledáno na dotaz"
+			"title": "Chercher la discussion",
+			"button": "Recherche",
+			"user": "Utilisateur",
+			"anyone": "n'importe qui",
+			"string": "Recherche text:",
+			"button": "Recherche",
+			"reset": "Reset",
+			"resultFor": "Résultats"
 		},
-		"loading": "Načítám diskuzi",
-		"sending": "Odesílám komentář ...",
-		"saved": "Příspěvek vložen",
+		"loading": "Discussion en cours de chargement",
+		"sending": "Envoi commentaire ...",
+		"saved": "Commentaire était ajouté",
 		"form": {
-			"placeholder": "Nový příspěvek",
-			"newPost": "Vložit"
+			"placeholder": "Nouveau commentaire",
+			"newPost": "Envoi"
 		}
 	},
 	"eventAttendance": {
-		"placeholder": "Poznámka k účasti"
+		"placeholder": "Commentaire"
 	},
 	"discussions": {
-		"title": "Diskuze"
+		"title": "Discussion"
 	},
 	"events": {
-		"title": "Události"
+		"title": "Événement"
 	},
 	"about": {
-		"title": "O aplikaci"
+		"title": "Sur App"
 	},
 	"team": {
-		"title": "Tým"
+		"title": "Team"
 	}
 }
