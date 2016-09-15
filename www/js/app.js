@@ -1,9 +1,15 @@
 var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter', 'pascalprecht.translate'])
 
 .constant('AppConfig', {
-  version: '0.5.0',
+  version: '0.9.0',
   lang: "cs",
   changelog: {
+    "0.9.0": {
+      date: "15.9.2016",
+      items: {
+        cs: ["Lze otevírat (do systémového prohlížeče) html odkazy v diskuzi či popisu události", "V docházce na události je účast setříděna dle pohlaví do dvou sloupců", "Aktuálně probíhající událost je viditelná jako budoucí", "Při rozkliknutí účasti na události se dá scrollovat snadno dolů"]
+      }
+    },
     "0.5.0": {
       date: "5.6.2016",
       items: {
