@@ -22,6 +22,18 @@ TC.controller('AboutCtrl', function($scope, $window, AppConfig) {
    };
 });
 
+app.filter('objectByKeyValFilter', function() {
+   return function(input, filterKey, filterVal) {
+      var filteredInput = {};
+      angular.forEach(input, function(value, key) {
+         if (value[filterKey] && value[filterKey] !== filterVal) {
+            filteredInput[key] = value;
+         }
+      });
+      return filteredInput;
+   }
+});
+
 TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $translate, md5, ServerUsers, ServerEventTypes, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
    $scope.$storage = $localStorage;
 
@@ -652,7 +664,6 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          $ionicScrollDelegate.resize();
       }
 
-
       $scope.$on('$ionicView.enter', function(event, viewData) {
          $scope.$watch('myAttendance.preDescription', function(newValue, oldValue) {
             if (typeof oldValue != "undefined" && oldValue.length > 0 && newValue !== oldValue) {
@@ -672,37 +683,69 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          $state.go(target);
       };
 
+      $scope.male = {};
+      $scope.female = {};
+      $scope.unknown = {};
+
       $scope.genderAttendance = function(attendance) {
-         var output = [];
-         var male = [];
-         var female = [];
-         var unknown = [];
-         angular.forEach(attendance, function(el) {
-            user = $filter('filter')($scope.$storage.Users, {
-               id: el.userId
-            }, true);
+         $scope.male[status] = [];
+         $scope.female[status] = [];
+         $scope.unknown[status] = [];
 
-            if (angular.isDefined(user) && user.length > 0) {
-               user = user[0];
-               if (user.gender == "MALE") {
-                  male.push(user.callName);
-               } else if (user.gender == "FEMALE") {
-                  female.push(user.callName);
+         angular.forEach($scope.event.eventType.preStatusSet, function(status) {
+            status = status.code;
+
+            var male = [];
+            var female = [];
+            var unknown = [];
+            angular.forEach(attendance[status], function(el) {
+               user = $filter('filter')($scope.$storage.Users, {
+                  id: el.userId
+               }, true);
+
+               if (angular.isDefined(user) && user.length > 0) {
+                  user = user[0];
+
+                  if (user.gender == "MALE") {
+                     male.push({
+                        "callName": user.callName,
+                        "preDescription": ""
+                     });
+                  } else if (user.gender == "FEMALE") {
+                     female.push({
+                        "callName": user.callName,
+                        "preDescription": ""
+                     });
+                  } else {
+                     unknown.push({
+                        "callName": user.callName,
+                        "preDescription": ""
+                     });
+                  }
                } else {
-                  unknown.push(user.callName);
+                  unknown.push({
+                     "callName": el.callName,
+                     "preDescription": ""
+                  });
                }
-            } else {
-               unknown.push(el.callName);
-            }
-         });
+            });
 
-         output.push("<i class='icon ion-male'></i> " + male.length);
-         output.push("<i class='icon ion-female'></i> " + female.length);
-         if (unknown.length > 0) {
-            output.push("<i class='icon ion-help'></i> " + unknown.length);
+            $scope.female[status] = female;
+            $scope.male[status] = male;
+            $scope.unknown[status] = unknown;
+         });
+      };
+
+      $scope.outputGenderAttendance = function(status) {
+         var output = [];
+
+         output.push("<i class='icon ion-male'></i> " + $scope.male[status].length);
+         output.push("<i class='icon ion-female'></i> " + $scope.female[status].length);
+         if ($scope.unknown[status].length > 0) {
+            output.push("<i class='icon ion-help'></i> " + $scope.unknown[status].length);
          }
          return "(" + output.join(", ") + ")";
-      };
+      }
 
       $scope.$on('$ionicView.beforeEnter', function() {
          $scope.refresh();
@@ -767,6 +810,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          ServerAPI.get(ServerEventDetail, function(data) {
             $scope.event = data.data;
             $scope.detectAttendance();
+            $scope.genderAttendance($scope.attendance);
             $scope.myAttendance = ServerAPI.userAttendanceOnEvent($scope.event);
          }, {
             eventId: $stateParams.eventId

@@ -1,41 +1,60 @@
 <ion-view>
-<ion-nav-title>{{event.caption}}</ion-nav-title>
-<ion-content>
-<div class="button-bar" ng-if="event.canPlan === true && event.inFuture === true">
-  <button id='{{type.code}}' ng-model='attendanceButton' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
-</div>
-<button class='button button-stable button-block icon icon-left ion-ios-people' ng-if="event.inPast === true">
-{{myAttendance.preStatus}}
-<span ng-if="myAttendance.postStatus.length > 0"> - ({{myAttendance.postStatus}})</span>
-<span ng-if="myAttendance.preDescription.length > 0"> - ({{myAttendance.preDescription}})</span>
-<span ng-if="myAttendance.postDescription.length > 0"> - ({{myAttendance.postDescription}})</span>
-</button>
-<label class="item item-input" ng-if='event.inFuture === true'>
-  <i class="icon ion-compose placeholder-icon"></i>
-  <input type="text" translate translate-attr-placeholder="{{placeholder}}" translate-value-browser="{{eventAttendance.placeholder}}" ng-model='myAttendance.preDescription'>
-</label>
-<div class="card">
-  <div class="item item-divider">
-    {{event.caption}}
-  </div>
-  <div class="item item-text-wrap" ng-bind-html="renderHtml(event.description)"></div>
-  <div class="item item-divider">
-    start: {{event.startTime|date:'HH:mm, dd.MM.yyyy'}} <br />
-    konec: {{event.endTime|date:'HH:mm, dd.MM.yyyy'}}
-  </div>
-</div>
-<div ng-repeat="status in event.eventType.preStatusSet">
-  <div class="card">
-    <div class="item item-divider" ng-click='resize()' on-tap='showAttendance = ! showAttendance'>
-      {{status.caption}} <span ng-bind-html="genderAttendance(attendance[status.code])"></span>
-      <i class="fr icon" ng-class='showAttendance?"ion-eye-disabled":"ion-eye"'></i>
-    </div>
-    <div class="item item-text-wrap" ng-show="showAttendance">
-      <p ng-repeat="attd in attendance[status.code]">
-        {{attd.user.callName}} <span ng-show="attd.preDescription.length > 0">({{attd.preDescription}})</span>
-      </p>
-    </div>
-  </div>
-</div>
-</ion-content>
+    <ion-nav-title>{{event.caption}}</ion-nav-title>
+    <ion-content>
+        <div class="button-bar" ng-if="event.canPlan === true && event.inFuture === true">
+            <button id='{{type.code}}' ng-model='attendanceButton' ng-repeat="type in event.eventType.preStatusSet" class="button" ng-class="buttonAttendance('{{type.code}}')" ng-click="setAttendance('{{type.code}}')">{{type.caption}}</button>
+        </div>
+        <button class='button button-stable button-block icon icon-left ion-ios-people' ng-if="event.inPast === true">
+            {{myAttendance.preStatus}}
+            <span ng-if="myAttendance.postStatus.length > 0"> - ({{myAttendance.postStatus}})</span>
+            <span ng-if="myAttendance.preDescription.length > 0"> - ({{myAttendance.preDescription}})</span>
+            <span ng-if="myAttendance.postDescription.length > 0"> - ({{myAttendance.postDescription}})</span>
+        </button>
+        <label class="item item-input" ng-if='event.inFuture === true'>
+            <i class="icon ion-compose placeholder-icon"></i>
+            <input type="text" translate translate-attr-placeholder="{{placeholder}}" translate-value-browser="{{eventAttendance.placeholder}}" ng-model='myAttendance.preDescription'>
+        </label>
+        <div class="card">
+            <div class="item item-divider">
+                {{event.caption}}
+            </div>
+            <div class="item item-text-wrap" ng-bind-html="renderHtml(event.description)"></div>
+            <div class="item item-divider">
+                start: {{event.startTime|date:'HH:mm, dd.MM.yyyy'}}
+                <br /> konec: {{event.endTime|date:'HH:mm, dd.MM.yyyy'}}
+            </div>
+        </div>
+        <div ng-repeat="status in event.eventType.preStatusSet">
+            <div class="card">
+                <div class="item item-divider" ng-click='resize()' on-tap='showAttendance = ! showAttendance'>
+                    {{status.caption}} <span ng-bind-html="outputGenderAttendance(status.code)"></span>
+                    <i class="fr icon" ng-class='showAttendance?"ion-eye-disabled":"ion-eye"'></i>
+                </div>
+                <div class="item item-text-wrap" ng-show="showAttendance">
+                    <div class='row'>
+                        <div class='col col-50'>
+                            <i class='icon ion-male'></i>
+                            <p ng-repeat="attd in male[status.code]|orderBy:'callName'">
+                                {{attd.callName}} <span ng-show="attd.preDescription.length > 0">({{attd.preDescription}})</span>
+                            </p>
+                        </div>
+                        <div class='col col-50'>
+                            <i class='icon ion-female'></i>
+                            <p ng-repeat="attd in female[status.code]|orderBy:'callName'">
+                                {{attd.callName}} <span ng-show="attd.preDescription.length > 0">({{attd.preDescription}})</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class='row' ng-if='unknown[status.code].length > 0'>
+                        <div class='col col-50'>
+                            <i class='icon ion-help'></i>
+                            <p ng-repeat="attd in unknown[status.code]|orderBy:'callName'">
+                                {{attd.callName}} <span ng-show="attd.preDescription.length > 0">({{attd.preDescription}})</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>
