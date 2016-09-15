@@ -26,7 +26,7 @@
 </div>
 <div ng-repeat="status in event.eventType.preStatusSet">
   <div class="card">
-    <div class="item item-divider" on-tap='showAttendance = ! showAttendance'>
+    <div class="item item-divider" ng-click='resize()' on-tap='showAttendance = ! showAttendance'>
       {{status.caption}} <span ng-bind-html="genderAttendance(attendance[status.code])"></span>
       <i class="fr icon" ng-class='showAttendance?"ion-eye-disabled":"ion-eye"'></i>
     </div>

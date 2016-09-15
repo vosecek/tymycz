@@ -640,13 +640,17 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          });
       };
    })
-   .controller("EventDetailCtrl", function($ionicConfig, $translate, Toast, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
+   .controller("EventDetailCtrl", function($ionicConfig, $ionicScrollDelegate, $translate, Toast, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
       $scope.$storage = $localStorage;
 
       $scope.placeholder = "";
       $translate("eventAttendance.placeholder").then(function(string) {
          $scope.placeholder = parseHtmlEnteties(string);
       });
+
+      $scope.resize = function() {
+         $ionicScrollDelegate.resize();
+      }
 
 
       $scope.$on('$ionicView.enter', function(event, viewData) {
