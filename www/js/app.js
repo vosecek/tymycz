@@ -49,7 +49,10 @@ angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.ela
   }
 })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $localStorage) {
+    $localStorage.$default({
+      servers: []
+    });
     $ionicPlatform.ready(function() {
       if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);

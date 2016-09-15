@@ -95,9 +95,6 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
                freshTeam: false
             });
             if ($scope.data.saveAccess === true) {
-               if (angular.isUndefined($scope.$storage.servers)) {
-                  $scope.$storage.servers = [];
-               }
                var record = $filter('filter')($scope.$storage.servers, {
                   url: loginData.url,
                   user: loginData.user
