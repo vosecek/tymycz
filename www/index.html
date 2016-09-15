@@ -30,6 +30,17 @@
     <link href="lib/ion-alpha-scroll/src/ion-alpha-scroll.css" rel="stylesheet">
     <script src="lib/angular-translate/angular-translate.min.js"></script>
     <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+    <script>
+    document.onclick = function(e) {
+        e = e || window.event;
+        var element = e.target || e.srcElement;
+
+        if (element.tagName == 'A') {
+            window.open(element.href, "_system", "location=yes");
+            return false; // prevent default action and stop event propagation
+        }
+    };
+    </script>
 </head>
 
 <body ng-app="tymy.cz">
