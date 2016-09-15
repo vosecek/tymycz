@@ -354,10 +354,11 @@ TC.controller('DashboardCtrl', function($scope, Toast, $translate, $ionicScrollD
 
          $scope.events = [];
          var inFuture = ListView.all(events).filter(function(el) {
-            if (el.inFuture === true) {
+            if (el.inFuture === true || (el.inFuture === false && el.inPast === false)) {
                return true;
             }
          });
+
          data = inFuture.reverse();
          $scope.events = data.slice(0, 3);
 
@@ -621,6 +622,11 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                ListView.add(events, data.data[i]);
             }
             $scope.events = ListView.all(events);
+            angular.forEach($scope.events, function(el) {
+               if (el.inPast === false && el.inFuture === false) {
+                  el.inFuture = true;
+               }
+            });
 
             $scope.inFuture = $scope.events.filter(function(el) {
                if (el.inFuture === true) {

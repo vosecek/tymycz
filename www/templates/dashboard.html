@@ -33,7 +33,7 @@
                     <div ng-if="eventsLoaded < eventsLimit" class="listSpinner">
                         <ion-spinner icon="lines"></ion-spinner>
                     </div>
-                    <ion-item class="" ng-repeat="event in events |filter:{inFuture:true}" type="item-text-wrap" href="#/tab/dashboard/events/{{event.id}}">
+                    <ion-item class="" ng-repeat="event in events" type="item-text-wrap" href="#/tab/dashboard/events/{{event.id}}">
                         <ion-option-button ng-if="event.canPlan === true" ng-repeat="status in event.eventType.preStatusSet" ng-click='setAttendance(status.code,{{event}})' ng-class="setAttendanceButton(status)" class="icon icon-left"></ion-option-button>
                         <small>
                         {{event.caption}}<br/>
