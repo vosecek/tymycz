@@ -269,11 +269,11 @@ TC.controller('DashboardCtrl', function($scope, Toast, $translate, $ionicScrollD
          $scope.$storage.freshTeam = true;
          $scope.doRefresh();
       }
+      $scope.data = {};
+      $scope.data.serverCallName = TS.Server.callName;
    });
 
    $scope.$on('$ionicView.loaded', function() {
-      $scope.data = {};
-      $scope.data.serverCallName = TS.Server.callName;
       $scope.refreshNews = $interval(function() {
          $scope.loadNews();
       }, 60000);
