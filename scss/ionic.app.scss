@@ -19,51 +19,82 @@ $dark:                            #444 !default;
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
-
-.searchResult{
-	button {
-		margin-bottom: .5em;
-	}
+.searchResult {
+    button {
+        margin-bottom: .5em;
+    }
 }
+
 .card {
-	margin: .8em 0em;
+    margin: .8em 0em;
 }
-.center {
-	text-align: center;
-}
-.listSpinner {
-	text-align: center;
-	padding: 1em;
-}
-.fr {
-	float: right;
-}
-.displayName {
-	text-align: center;
-}
-.userImage {
-	padding: .3em;
-	display: block;
-	box-shadow: 0px -1px 10px rgba(0, 0, 0, 0.4);
-	border-radius: 15px;
-	margin: auto;
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
-.lastLogin {
-	text-align: center;
-	font-size: smaller;
-	color: #888;
-	margin-bottom: 1em;
-}
-.discussion-post {
-	.item {
-		font-size: 85%;
-		line-height: 1.3em;
-		padding: 5px 10px;
 
-		.item-body {
-			padding: 10px;
-		}
-	}
+.center {
+    text-align: center;
+}
+
+.listSpinner {
+    text-align: center;
+    padding: 1em;
+}
+
+.fr {
+    float: right;
+}
+
+.displayName {
+    text-align: center;
+}
+
+.userImage {
+    padding: .3em;
+    display: block;
+    box-shadow: 0px -1px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.lastLogin {
+    text-align: center;
+    font-size: smaller;
+    color: #888;
+    margin-bottom: 1em;
+}
+
+.discussion-post {
+    .item {
+        font-size: 85%;
+        line-height: 1.3em;
+        padding: 5px 10px;
+        .item-body {
+            padding: 10px;
+        }
+    }
+    .thumb {
+        max-height: 2em;
+        max-width: 1.5em;
+        margin-bottom: 0em;
+        margin-right: .3em;
+    }
+}
+
+.thumb {
+    box-shadow: 0px 0px 6px #888888;
+    max-width: 2em;
+    max-height: 3em;
+    border-radius: 2em;
+    margin-right: .5em;
+    margin-bottom: .4em;
+    vertical-align: middle;
+}
+
+.genderSection {
+    margin: 0em 0em .5em .5em;
+    display: block;
+}
+
+.attendanceList.item {
+    padding: 8px;
 }

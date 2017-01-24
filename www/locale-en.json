@@ -1,84 +1,98 @@
 {
-	"general": {
-		"unknownGender": "not set",
-		"isOffline": "Unable to connect to internet",
-		"switch": "Connecting to",
-		"refresher": "Pull down to update",
-		"back": "Back"
-	},
-	"dashboard": {
-		"title": "Overview",
-		"discussionsWithNewComments": "Discussions with new comments",
-		"allDiscussions": "All discussions",
-		"closestEvents": "Nearest events",
-		"allEvents": "All events"
-	},
-	"login": {
-		"title": "Login",
-		"login": "Logging in",
-		"newTeamSaved": "New team was saved, you can modify it in team settings",
-		"notSupported": "Non-existent URL or unsupported team. The app is available only for paying teams.",
-		"logout": "Logging out",
-		"form": {
-			"server": "Web (without tymy.cz)",
-			"username": "Username",
-			"password": "Password",
-			"saveAccess": "Save credentials",
-			"button": "Login"
-		}
-	},
-	"attendance": {
-		"updated": "Attendance updated",
-		"error": "Error on entering attendance to the server"
-	},
-	"user": {
-		"title": "My account",
-		"error": "Error on loading user data",
-		"teamRemoved": "Team removed successfully",
-		"updated": "Updated",
-		"newAutoLogin": "Loging in automatically disabled for team:",
-		"lastLogin": "Last login",
-		"teamData": {
-			"address": "Address",
-			"callName": "Nickname",
-			"username": "Username",
-			"newPassword": "New Password",
-			"autoLogin": "Login automatically",
-			"button": "Save"
-		}
-	},
-	"discussion": {
-		"search": {
-			"title": "Search discussion",
-			"button": "Search",
-			"user": "User",
-			"anyone": "Anyone",
-			"string": "Searched Text:",
-			"button": "Search",
-			"reset": "Reset",
-			"resultFor": "Results"
-		},
-		"loading": "Loading discussion",
-		"sending": "Sending comment ...",
-		"saved": "Comment added",
-		"form": {
-			"placeholder": "New comment",
-			"newPost": "Submit"
-		}
-	},
-	"eventAttendance": {
-		"placeholder": "Comment"
-	},
-	"discussions": {
-		"title": "Discussions"
-	},
-	"events": {
-		"title": "Events"
-	},
-	"about": {
-		"title": "About"
-	},
-	"team": {
-		"title": "Team"
-	}
+    "general": {
+        "unknownGender": "not set",
+        "isOffline": "Unable to connect to internet",
+        "switch": "Connecting to",
+        "refresher": "Pull down to update",
+        "back": "Back"
+    },
+    "dashboard": {
+        "title": "Overview",
+        "discussionsWithNewComments": "Discussions with new comments",
+        "allDiscussions": "All discussions",
+        "closestEvents": "Nearest events",
+        "allEvents": "All events"
+    },
+    "login": {
+        "title": "Login",
+        "login": "Logging in",
+        "newTeamSaved": "New team was saved, you can modify it in team settings",
+        "notSupported": "Non-existent URL or unsupported team. The app is available only for paying teams.",
+        "logout": "Logging out",
+        "form": {
+            "server": "Web (without tymy.cz)",
+            "username": "Username",
+            "password": "Password",
+            "saveAccess": "Save credentials",
+            "button": "Login"
+        }
+    },
+    "attendance": {
+        "updated": "Attendance updated",
+        "error": "Error on entering attendance to the server"
+    },
+    "user": {
+        "title": "My account",
+        "error": "Error on loading user data",
+        "teamRemoved": "Team removed successfully",
+        "updated": "Updated",
+        "newAutoLogin": "Loging in automatically disabled for team:",
+        "lastLogin": "Last login",
+        "teamData": {
+            "address": "Address",
+            "callName": "Nickname",
+            "username": "Username",
+            "newPassword": "New Password",
+            "autoLogin": "Login automatically",
+            "button": "Save"
+        }
+    },
+    "discussion": {
+        "search": {
+            "title": "Search discussion",
+            "button": "Search",
+            "user": "User",
+            "anyone": "Anyone",
+            "string": "Searched Text:",
+            "button": "Search",
+            "reset": "Reset",
+            "resultFor": "Results"
+        },
+        "loading": "Loading discussion",
+        "sending": "Sending comment ...",
+        "saved": "Comment added",
+        "form": {
+            "placeholder": "New comment",
+            "newPost": "Submit"
+        }
+    },
+    "eventAttendance": {
+        "placeholder": "Comment",
+        "eventType": {
+            "UNDECIDED": {
+                "caption": "Undecided"
+            }
+        }
+    },
+    "discussions": {
+        "title": "Discussions"
+    },
+    "events": {
+        "title": "Events"
+    },
+    "about": {
+        "title": "About"
+    },
+    "team": {
+        "title": "Team"
+    },
+    "eventDetail": {
+        "afterCloseTime": "Close time passed, your attendance: ",
+        "startTime": "start",
+        "endTime": "end",
+        "closeTime": "close time",
+        "place": "place",
+        "link": "link",
+        "playersOnly": "Here are Players only"
+    }
 }

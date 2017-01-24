@@ -17,7 +17,7 @@
             </div>
             <div class="list card" ng-repeat="post in posts">
                 <div class="item item-divider" ng-click="copy(post)" ng-class="setClassHeader(post)">
-                    {{post.createdBy.callName}}, {{post.createdAtStr}}
+                    <img ng-src='{{serverUrl}}{{post.createdBy.pictureUrl}}' class='thumb'> {{post.createdBy.callName}}, {{post.createdAtStr}}
                     <span href="#" class="item-icon-right">
                 <i class="icon ion-ios-copy-outline"></i>
             </span>
