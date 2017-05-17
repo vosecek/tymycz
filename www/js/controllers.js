@@ -260,7 +260,7 @@ TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUs
             });
     };
 });
-TC.controller('DashboardCtrl', function($scope, Toast, $translate, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
+TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
     $scope.$storage = $localStorage;
 
     $scope.$on('$ionicView.beforeEnter', function() {

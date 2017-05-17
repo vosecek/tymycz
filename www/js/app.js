@@ -1,9 +1,15 @@
 var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter', 'pascalprecht.translate'])
 
 .constant('AppConfig', {
-    version: '0.9.5',
+    version: '1.0.0',
     lang: "cs",
     changelog: {
+        "1.0.0": {
+            date: "17.5.2017",
+            items: {
+                cs: ["Telefon a adresa na detailu hráče"]
+            }
+        },
         "0.9.5": {
             date: "24.1.2017",
             items: {
@@ -85,7 +91,8 @@ var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'mono
     }
 })
 
-.run(function($ionicPlatform, $localStorage) {
+.run(function($ionicPlatform, $localStorage, $rootScope, AppConfig) {
+        $rootScope.AppConfig = AppConfig;
         $localStorage.$default({
             servers: []
         });

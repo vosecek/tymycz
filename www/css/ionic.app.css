@@ -9868,7 +9868,7 @@ a.button {
   max-height: 3em;
   border-radius: 2em;
   margin-right: .5em;
-  margin-bottom: .3em;
+  margin-bottom: .4em;
   vertical-align: middle; }
 
 .genderSection {
@@ -9877,3 +9877,9 @@ a.button {
 
 .attendanceList.item {
   padding: 8px; }
+
+.version {
+  width: 100%;
+  padding: .5em;
+  text-align: center;
+  color: #ccc; }

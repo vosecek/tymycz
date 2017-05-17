@@ -7,7 +7,10 @@
         <ion-list>
             <ion-item class="item-icon-left"><i class="icon ion-person"></i>{{data.fullName}}</ion-item>
             <ion-item ng-click="email()" class="item-icon-left"><i class="icon ion-at"></i>{{data.email}}</ion-item>
-            <!-- <ion-item class="item-icon-left"><i class="icon ion-ios-telephone"></i>...</ion-item> -->
+            <ion-item ng-if='data.phone && data.phone.length>0' ng-click='tel:data.phone' class="item-icon-left"><i class="icon ion-ios-telephone"></i>{{data.phone}}</ion-item>
+            <ion-item ng-if='data.phone2 && data.phone2.length>0' ng-click='tel:data.phone2' class="item-icon-left"><i class="icon ion-ios-telephone"></i>{{data.phone2}}</ion-item>
+            <ion-item ng-if='data.city && data.city.length>0' ng-click='tel:data.city' class="item-icon-left"><i class="icon ion-earth"></i>{{data.city}}</ion-item>
+            <ion-item ng-if='data.street && data.street.length>0' ng-click='tel:data.street' class="item-icon-left"><i class="icon ion-home"></i>{{data.street}}<span ng-if='data.ziCcode'>{{data.zipCode}}</span></ion-item>
         </ion-list>
     </ion-content>
 </ion-view>
