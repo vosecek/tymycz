@@ -1,9 +1,21 @@
 var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter', 'pascalprecht.translate'])
 
 .constant('AppConfig', {
-    version: '1.0.0',
+    version: '1.0.2',
     lang: "cs",
     changelog: {
+        "1.0.2": {
+            date: "22.5.2017",
+            items: {
+                cs: ["Opětovné přihlášení při vypršení platnosti původního (přizpůsobení na aktualizaci API tymy.cz)"]
+            }
+        },
+        "1.0.1": {
+            date: "21.5.2017",
+            items: {
+                cs: ["Opravy ikony aplikace"]
+            }
+        },
         "1.0.0": {
             date: "17.5.2017",
             items: {
