@@ -80,9 +80,17 @@
   <PropertyGroup>
     <!-- Customize which folders are not shown by default -->
     <ExcludedItems>bin;bld;platforms;node_modules;simulation;plugins</ExcludedItems>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="**\**" Exclude="**\platforms\**;**\bin\**;**\bld\**;**\node_modules\**;**\simulation\**;**\plugins\**;.gitignore;tymycz.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="res\native\windows\Package.StoreAssociation.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\native\windows\Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="config.xml">

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<widget id="cz.tymy.app" version="1.0.0" android-version="10000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="cz.tymy.app" version="1.0.0" android-version="10000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" windows-packageVersion="1.1.0.0">
   <name>Tymy.cz</name>
   <description>
-        ÄŒteÄka a zÃ¡piska pro server tymy.cz.
+        Čtečka a zápiska pro server tymy.cz.
     </description>
   <author email="jiri.vosecek@gmail.com" href="http://www.frisbee.cz/">
-        JiÅ™Ã­ VoseÄek
+        Jiří­ Voseček
     </author>
   <content src="index.html" />
   <access origin="*" />
@@ -79,4 +79,13 @@
   <engine name="ios" spec="4.2.0" />
   <engine name="windows" spec="~4.4.2" />
   <preference name="windows-target-version" value="10.0" />
+  <vs:platformSpecificValues xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps">
+    <vs:platformSpecificWidget platformName="windows" />
+  </vs:platformSpecificValues>
+  <preference name="WindowsStoreIdentityName" value="57917YoSarin.Tymy.cz" />
+  <preference name="WindowsStorePublisherName" value="YoSarin" />
+  <preference name="WindowsStoreDisplayName" value="Tymy.cz" />
+  <plugin name="de.appplant.cordova.plugin.local-notification" spec="~0.8.4" src="https://github.com/katzer/cordova-plugin-local-notifications" />
+  <plugin name="cordova-plugin-app-event" spec="~1.2.1" />
+  <plugin name="cordova-plugin-device" spec="~1.1.6" />
 </widget>
