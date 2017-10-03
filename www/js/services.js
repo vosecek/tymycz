@@ -11,6 +11,23 @@ function parseHtmlEnteties(str) {
     }
 }
 
+function deBB(post) {
+    post = post.replace(/\[url(=(.*?))?\](.*?)\[\/url\]/gi, function (match, _, url, text) {
+        url = (typeof url === "undefined") ? text : url;
+        return '<a href="' + url + '">' + text + '</a>';
+    });
+    post = post.replace(/\[color=(.*?)\](.*?)\[\/color\]/gi, function (match, color, text) {
+        return '<span style="color:' + color + ';">' + text + '</a>';
+    });
+    post = post.replace(/\[size=(.*?)\](.*?)\[\/size\]/gi, function (match, size, text) {
+        return '<span style="size:' + size + 'px;">' + text + '</a>';
+    });
+    post = post.replace(/\[b\](.*?)\[\/b\]/gi, function (match, text) {
+        return '<b>' + text + '</b>';
+    });
+    return post;
+}
+
 TS.Server = {
     fullUrl: function() {
         return "http://" + this.url;

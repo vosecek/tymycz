@@ -965,12 +965,14 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         };
         $scope.setClass = function(sticky) {
             if (sticky === true) {
-                return "assertive";
+                return "sticky";
             }
             /**
              * @todo  oznacovat autorovy prispevky necim
              */
         };
+        $scope.canPin = true;
+        $scope.canDelete = true;
 
         $translate("discussion.loading").then(function(string) {
             $ionicLoading.show({
@@ -1032,6 +1034,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                 for (var i in data.data.posts) {
                     if (angular.isDefined(data.data.posts[i].post)) {
                         data.data.posts[i].post = data.data.posts[i].post.stripSlashes();
+                        data.data.posts[i].post = deBB(data.data.posts[i].post);
                         ListView.add(master, data.data.posts[i]);
                     }
                 }
