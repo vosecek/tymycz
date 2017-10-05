@@ -25,8 +25,8 @@
                     <div class="post-detail" ng-bind-html="post.post"></div>
                   </div>
                 <ion-option-button ng-click="copy(post)" class="icon ion-ios-copy-outline"></ion-option-button>
-                <ion-option-button ng-if="canPin" ng-click="togglePin(post)" ng-class="post.sticky ? 'button-positive' : 'button-negative'" class="icon ion-pin"></ion-option-button>
-                <ion-option-button ng-if="canDelete" ng-click="delete(post)" class="button-assertive icon ion-trash-a"></ion-option-button>
+                <ion-option-button ng-if="discussion.canStick" ng-click="toggleSticky(post)" ng-class="post.sticky ? 'button-positive' : 'button-negative'" class="icon ion-pin"></ion-option-button>
+                <!--<ion-option-button ng-if="discussion.canDelete" ng-click="delete(post)" class="button-assertive icon ion-trash-a"></ion-option-button>-->
               </ion-item>
             </ion-list>
             <ion-infinite-scroll on-infinite="loadMoreNews()" ng-if="moreDataCanBeLoaded()">

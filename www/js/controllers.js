@@ -618,6 +618,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.events = $scope[show];
         };
 
+        $scope.fixText = function (text) {
+            return nl2br(deBB(text));
+        }
+
         $scope.doRefresh = function() {
             $scope.refresh();
             $scope.$broadcast('scroll.refreshComplete');
@@ -845,6 +849,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.refresh = function() {
             ServerAPI.get(ServerEventDetail, function(data) {
                 $scope.event = data.data;
+                $scope.description = nl2br(deBB(data.data.description))
                 $scope.event.beforeClose = (new Date($scope.event.closeTime) > new Date());
 
                 $translate("eventAttendance.eventType.UNDECIDED.caption").then(function(string) {
@@ -870,7 +875,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             return $sce.trustAsHtml(html_code);
         };
     })
-    .controller("DiscussionDetailCtrl", function($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+    .controller("DiscussionDetailCtrl", function ($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost, ServerDiscussionPostEdit) {
         $scope.loadedPages = 1;
         $scope.modal = false;
         $scope.$storage = $localStorage;
@@ -971,8 +976,6 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
              * @todo  oznacovat autorovy prispevky necim
              */
         };
-        $scope.canPin = true;
-        $scope.canDelete = true;
 
         $translate("discussion.loading").then(function(string) {
             $ionicLoading.show({
@@ -1004,6 +1007,35 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                     post: $scope.form.comment
                 },
             });
+        };
+
+        $scope.toggleSticky = function (post) {
+            $translate("discussion.sending").then(function (string) {
+                $ionicLoading.show({
+                    template: string
+                });
+            });
+            ServerAPI.update(
+                ServerDiscussionPostEdit,
+                function (data) {
+                    $scope.posts = ListView.all(master);
+                    $translate("discussion.saved").then(function (string) {
+                        $ionicLoading.show({
+                            template: string,
+                            duration: 900
+                        });
+                    });
+                    $scope.form.comment = "";
+                    $scope.refresh(1, true);
+                },
+                {
+                    discussionId: $stateParams.discussionId,
+                    postId: post.id,
+                    post: {
+                        sticky: !post.sticky
+                    }
+                }
+            );
         };
 
         $scope.dirtyNews = function() {

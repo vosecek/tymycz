@@ -52,3 +52,11 @@
   background-color: #ffd800;
   border-color: #ff6a00;
 }
+
+.collapsed {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: 2em;
+  line-height: 2em;
+}
