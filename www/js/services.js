@@ -11,6 +11,28 @@ function parseHtmlEnteties(str) {
     }
 }
 
+function deBB(post) {
+    post = post.replace(/\[url(=(.*?))?\](.*?)\[\/url\]/gi, function (match, _, url, text) {
+        url = (typeof url === "undefined") ? text : url;
+        return '<a href="' + url + '">' + text + '</a>';
+    });
+    post = post.replace(/\[color=(.*?)\](.*?)\[\/color\]/gi, function (match, color, text) {
+        return '<span style="color:' + color + ';">' + text + '</a>';
+    });
+    post = post.replace(/\[size=(.*?)\](.*?)\[\/size\]/gi, function (match, size, text) {
+        return '<span style="size:' + size + 'px;">' + text + '</a>';
+    });
+    post = post.replace(/\[b\](.*?)\[\/b\]/gi, function (match, text) {
+        return '<b>' + text + '</b>';
+    });
+    return post;
+}
+
+function nl2br(text) {
+    text = text.replace(/\n/gi, "<br />");
+    return text;
+}
+
 TS.Server = {
     fullUrl: function() {
         return "http://" + this.url;
@@ -48,8 +70,11 @@ TS.factory('ServerUsers', ['$resource', function($resource, $stateParams) {
 TS.factory('ServerUserDetail', ['$resource', function($resource, $stateParams) {
     return $resource('http://:url/api/user/:userId');
 }]);
-TS.factory('ServerDiscussionPost', ['$resource', function($resource, $stateParams) {
+TS.factory('ServerDiscussionPost', ['$resource', function ($resource, $stateParams) {
     return $resource('http://:url/api/discussion/:discussionId/post');
+}]);
+TS.factory('ServerDiscussionPostEdit', ['$resource', function ($resource, $stateParams) {
+    return $resource('http://:url/api/discussion/:discussionId/editPost/:postId', null, { update: { method: 'PUT', headers: {"Content-Type": "application/json"}}});
 }]);
 TS.factory('ServerAttendance', ['$http', function($http, $stateParams) {
     return "api/attendance";
@@ -172,6 +197,24 @@ TS.factory('ServerAPI', function($ionicLoading, $translate, Toast, $state, $http
             Request.$save(params, function(data) {
                 callback(data);
             });
+        },
+        update: function (connection, callback, params) {
+            params.TSID = TS.Server.TSID;
+            params.url = TS.Server.url;
+            var Request = new connection();
+
+            if (angular.isDefined(params.post)) {
+                for (var i in params.post) {
+                    Request[i] = params.post[i];
+                }
+                delete params.post;
+            }
+
+            console.log(Request);
+
+            Request.$update(params, function (data) {
+                callback(data);
+            });
         }
     };
 
@@ -205,7 +248,8 @@ TS.factory('ServerAPI', function($ionicLoading, $translate, Toast, $state, $http
         },
         http: wrapperFunction.http,
         get: wrapperFunction.get,
-        save: wrapperFunction.save
+        save: wrapperFunction.save,
+        update: wrapperFunction.update
     };
 });
 

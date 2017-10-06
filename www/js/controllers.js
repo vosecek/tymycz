@@ -618,6 +618,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.events = $scope[show];
         };
 
+        $scope.fixText = function (text) {
+            return nl2br(deBB(text));
+        }
+
         $scope.doRefresh = function() {
             $scope.refresh();
             $scope.$broadcast('scroll.refreshComplete');
@@ -845,6 +849,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.refresh = function() {
             ServerAPI.get(ServerEventDetail, function(data) {
                 $scope.event = data.data;
+                $scope.description = nl2br(deBB(data.data.description))
                 $scope.event.beforeClose = (new Date($scope.event.closeTime) > new Date());
 
                 $translate("eventAttendance.eventType.UNDECIDED.caption").then(function(string) {
@@ -870,7 +875,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             return $sce.trustAsHtml(html_code);
         };
     })
-    .controller("DiscussionDetailCtrl", function($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+    .controller("DiscussionDetailCtrl", function ($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost, ServerDiscussionPostEdit) {
         $scope.loadedPages = 1;
         $scope.modal = false;
         $scope.$storage = $localStorage;
@@ -965,7 +970,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         };
         $scope.setClass = function(sticky) {
             if (sticky === true) {
-                return "assertive";
+                return "sticky";
             }
             /**
              * @todo  oznacovat autorovy prispevky necim
@@ -1004,6 +1009,35 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         };
 
+        $scope.toggleSticky = function (post) {
+            $translate("discussion.sending").then(function (string) {
+                $ionicLoading.show({
+                    template: string
+                });
+            });
+            ServerAPI.update(
+                ServerDiscussionPostEdit,
+                function (data) {
+                    $scope.posts = ListView.all(master);
+                    $translate("discussion.saved").then(function (string) {
+                        $ionicLoading.show({
+                            template: string,
+                            duration: 900
+                        });
+                    });
+                    $scope.form.comment = "";
+                    $scope.refresh(1, true);
+                },
+                {
+                    discussionId: $stateParams.discussionId,
+                    postId: post.id,
+                    post: {
+                        sticky: !post.sticky
+                    }
+                }
+            );
+        };
+
         $scope.dirtyNews = function() {
             if ($scope.$storage.totalNewPosts > 0) {
                 $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
@@ -1032,6 +1066,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                 for (var i in data.data.posts) {
                     if (angular.isDefined(data.data.posts[i].post)) {
                         data.data.posts[i].post = data.data.posts[i].post.stripSlashes();
+                        data.data.posts[i].post = deBB(data.data.posts[i].post);
                         ListView.add(master, data.data.posts[i]);
                     }
                 }

@@ -34,15 +34,29 @@
     margin-bottom: 1em;
 }
 
-.discussion-post .item {
+.discussion-list .discussion-item {
     font-size: 85%;
     line-height: 1.3em;
 }
 
-.discussion-post .item {
-    padding: 5px 10px;
+.discussion-list .discussion-item {
+  padding: 5px 10px;
 }
 
-.discussion-post .item-body {
-    padding: 10px;
+.discussion-list .post-detail {
+  padding: 10px;
+  white-space: normal;
+}
+
+.discussion-list .sticky .item-content {
+  background-color: #ffd800;
+  border-color: #ff6a00;
+}
+
+.collapsed {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: 2em;
+  line-height: 2em;
 }
