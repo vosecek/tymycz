@@ -50,6 +50,9 @@
 
 .discussion-list .item-content {
   padding: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0px, 0px, 0px);
 }
 
 .discussion-list .sticky {
