@@ -72,14 +72,16 @@
     <splash src="resources/ios/splash/Default~iphone.png" width="320" height="480" />
   </platform>
   <platform name="windows">
-    <icon src="resources/windows/storelogo.png" target="StoreLogo" />
-    <icon src="resources/windows/smalllogo.png" target="Square30x30Logo" />
-    <icon src="resources/windows/Square44x44Logo.png" target="Square44x44Logo" />
-    <icon src="resources/windows/Square70x70Logo.png" target="Square70x70Logo" />
-    <icon src="resources/windows/Square71x71Logo.png" target="Square71x71Logo" />
-    <icon src="resources/windows/Square150x150Logo.png" target="Square150x150Logo" />
-    <icon src="resources/windows/Square310x310Logo.png" target="Square310x310Logo" />
-    <icon src="resources/windows/Wide310x150Logo.png" target="Wide310x150Logo" />
+    <icon src="resources/windows/icon/storelogo.png" target="StoreLogo" />
+    <icon src="resources/windows/icon/smalllogo.png" target="Square30x30Logo" />
+    <icon src="resources/windows/icon/Square44x44Logo.png" target="Square44x44Logo" />
+    <icon src="resources/windows/icon/Square70x70Logo.png" target="Square70x70Logo" />
+    <icon src="resources/windows/icon/Square71x71Logo.png" target="Square71x71Logo" />
+    <icon src="resources/windows/icon/Square150x150Logo.png" target="Square150x150Logo" />
+    <icon src="resources/windows/icon/Square310x310Logo.png" target="Square310x310Logo" />
+    <icon src="resources/windows/icon/Wide310x150Logo.png" target="Wide310x150Logo" />
+    <splash src="resources/screen/windows/splash/620x300.png" width="620" height="300"/>
+    <splash src="resources/screen/windows/splash/1152x1920.png" width="1152" height="1920"/>
   </platform>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
   <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0" />
