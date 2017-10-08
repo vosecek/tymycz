@@ -80,8 +80,8 @@
     <icon src="resources/windows/icon/Square150x150Logo.png" target="Square150x150Logo" />
     <icon src="resources/windows/icon/Square310x310Logo.png" target="Square310x310Logo" />
     <icon src="resources/windows/icon/Wide310x150Logo.png" target="Wide310x150Logo" />
-    <splash src="resources/screen/windows/splash/620x300.png" width="620" height="300"/>
-    <splash src="resources/screen/windows/splash/1152x1920.png" width="1152" height="1920"/>
+    <splash src="resources/windows/splash/620x300.png" width="620" height="300"/>
+    <splash src="resources/windows/splash/1152x1920.png" width="1152" height="1920"/>
   </platform>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
   <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0" />
