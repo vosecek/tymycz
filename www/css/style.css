@@ -1,4 +1,4 @@
-/* Empty. Add your own CSS if you like */
+﻿/* Empty. Add your own CSS if you like */
 
 .center {
     text-align: center;
@@ -48,10 +48,27 @@
   white-space: normal;
 }
 
-.discussion-list .sticky .item-content {
-  background-color: #ffd800;
+.discussion-list .item-content {
+  padding: 10px;
+}
+
+.discussion-list .sticky {
   border-color: #ff6a00;
 }
+
+.discussion-list .sticky .item-content {
+  background-color: #ffd800;
+}
+
+.discussion-list .card {
+  padding: 0px;
+}
+
+.discussion-list .author h2:after {
+  content: "👱";
+  float: right;
+}
+
 
 .collapsed {
   overflow: hidden;

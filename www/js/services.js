@@ -73,6 +73,9 @@ TS.factory('ServerUserDetail', ['$resource', function($resource, $stateParams) {
 TS.factory('ServerDiscussionPost', ['$resource', function ($resource, $stateParams) {
     return $resource('http://:url/api/discussion/:discussionId/post');
 }]);
+TS.factory('ServerDiscussionPostDelete', ['$resource', function ($resource, $stateParams) {
+    return $resource('http://:url/api/discussion/:discussionId/deletePost/:postId', null);
+}]);
 TS.factory('ServerDiscussionPostEdit', ['$resource', function ($resource, $stateParams) {
     return $resource('http://:url/api/discussion/:discussionId/editPost/:postId', null, { update: { method: 'PUT', headers: {"Content-Type": "application/json"}}});
 }]);
@@ -215,6 +218,24 @@ TS.factory('ServerAPI', function($ionicLoading, $translate, Toast, $state, $http
             Request.$update(params, function (data) {
                 callback(data);
             });
+        },
+        delete: function (connection, callback, params) {
+            params.TSID = TS.Server.TSID;
+            params.url = TS.Server.url;
+            var Request = new connection();
+
+            if (angular.isDefined(params.post)) {
+                for (var i in params.post) {
+                    Request[i] = params.post[i];
+                }
+                delete params.post;
+            }
+
+            console.log(Request);
+
+            Request.$delete(params, function (data) {
+                callback(data);
+            });
         }
     };
 
@@ -249,7 +270,8 @@ TS.factory('ServerAPI', function($ionicLoading, $translate, Toast, $state, $http
         http: wrapperFunction.http,
         get: wrapperFunction.get,
         save: wrapperFunction.save,
-        update: wrapperFunction.update
+        update: wrapperFunction.update,
+        delete: wrapperFunction.delete
     };
 });
 
