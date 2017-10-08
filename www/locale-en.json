@@ -47,25 +47,27 @@
             "button": "Save"
         }
     },
-    "discussion": {
-        "search": {
-            "title": "Search discussion",
-            "button": "Search",
-            "user": "User",
-            "anyone": "Anyone",
-            "string": "Searched Text:",
-            "button": "Search",
-            "reset": "Reset",
-            "resultFor": "Results"
-        },
-        "loading": "Loading discussion",
-        "sending": "Sending comment ...",
-        "saved": "Comment added",
-        "form": {
-            "placeholder": "New comment",
-            "newPost": "Submit"
-        }
+  "discussion": {
+    "search": {
+      "title": "Search discussion",
+      "button": "Search",
+      "user": "User",
+      "anyone": "Anyone",
+      "string": "Searched Text:",
+      "button": "Search",
+      "reset": "Reset",
+      "resultFor": "Results"
     },
+    "loading": "Loading discussion",
+    "sending": "Sending comment ...",
+    "sticking": "Toggling sticknes of comment ...",
+    "deleting": "Removing comment ...",
+    "saved": "Comment added",
+    "form": {
+      "placeholder": "New comment",
+      "newPost": "Submit"
+    }
+  },
     "eventAttendance": {
         "placeholder": "Comment",
         "eventType": {

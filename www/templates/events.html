@@ -7,8 +7,8 @@
     <ion-list>
       <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/tab/events/{{event.id}}">
         <h2>{{event.caption}}</h2>
-        <p>{{event.description}}</p>
         <p>{{event.startTime | date:"dd.MM.yyyy HH:mm"}}</p>
+        <p class="collapsed" ng-bind-html="fixText(event.description)"></p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>

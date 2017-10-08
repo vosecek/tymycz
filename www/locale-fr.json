@@ -47,25 +47,27 @@
 			"button": "Enregistré"
 		}
 	},
-	"discussion": {
-		"search": {
-			"title": "Chercher la discussion",
-			"button": "Recherche",
-			"user": "Utilisateur",
-			"anyone": "n'importe qui",
-			"string": "Recherche text:",
-			"button": "Recherche",
-			"reset": "Reset",
-			"resultFor": "Résultats"
-		},
-		"loading": "Discussion en cours de chargement",
-		"sending": "Envoi commentaire ...",
-		"saved": "Commentaire était ajouté",
-		"form": {
-			"placeholder": "Nouveau commentaire",
-			"newPost": "Envoi"
-		}
-	},
+  "discussion": {
+    "search": {
+      "title": "Chercher la discussion",
+      "button": "Recherche",
+      "user": "Utilisateur",
+      "anyone": "n'importe qui",
+      "string": "Recherche text:",
+      "button": "Recherche",
+      "reset": "Reset",
+      "resultFor": "Résultats"
+    },
+    "loading": "Discussion en cours de chargement",
+    "sending": "Envoi commentaire ...",
+    "sticking": "Připínám/odepínám komentář ...",
+    "deleting": "Mažu komentář ...",
+    "saved": "Commentaire était ajouté",
+    "form": {
+      "placeholder": "Nouveau commentaire",
+      "newPost": "Envoi"
+    }
+  },
 	"eventAttendance": {
 		"placeholder": "Commentaire"
 	},
