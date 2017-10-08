@@ -72,6 +72,19 @@
   float: right;
 }
 
+.discussion-list .new .item-content {
+  background-color: #bfa;
+}
+
+.discussion-list .new {
+  border-color: #9D8;
+}
+
+.discussion-list .new h2:after {
+  content: "⭐";
+  float: right;
+}
+
 
 .collapsed {
   overflow: hidden;
