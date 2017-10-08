@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <widget id="cz.tymy.app" version="1.0.0" android-version="10000" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" windows-packageVersion="1.1.0.0">
   <name>Tymy.cz</name>
   <description>
@@ -70,6 +70,16 @@
     <splash src="resources/ios/splash/Default-Portrait~ipad.png" width="768" height="1024" />
     <splash src="resources/ios/splash/Default@2x~iphone.png" width="640" height="960" />
     <splash src="resources/ios/splash/Default~iphone.png" width="320" height="480" />
+  </platform>
+  <platform name="windows">
+    <icon src="resources/windows/storelogo.png" target="StoreLogo" />
+    <icon src="resources/windows/smalllogo.png" target="Square30x30Logo" />
+    <icon src="resources/windows/Square44x44Logo.png" target="Square44x44Logo" />
+    <icon src="resources/windows/Square70x70Logo.png" target="Square70x70Logo" />
+    <icon src="resources/windows/Square71x71Logo.png" target="Square71x71Logo" />
+    <icon src="resources/windows/Square150x150Logo.png" target="Square150x150Logo" />
+    <icon src="resources/windows/Square310x310Logo.png" target="Square310x310Logo" />
+    <icon src="resources/windows/Wide310x150Logo.png" target="Wide310x150Logo" />
   </platform>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
   <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0" />
