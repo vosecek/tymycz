@@ -50,6 +50,9 @@
 
 .discussion-list .item-content {
   padding: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0px, 0px, 0px);
 }
 
 .discussion-list .sticky {
@@ -66,6 +69,19 @@
 
 .discussion-list .author h2:after {
   content: "👱";
+  float: right;
+}
+
+.discussion-list .new .item-content {
+  background-color: #bfa;
+}
+
+.discussion-list .new {
+  border-color: #9D8;
+}
+
+.discussion-list .new h2:after {
+  content: "⭐";
   float: right;
 }
 

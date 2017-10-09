@@ -988,6 +988,9 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             if ($scope.isAuthor(post)) {
                 names.push("author");
             }
+            if (post.newPost) {
+                names.push("new");
+            }
 
             return names.join(" ");
         };
