@@ -618,6 +618,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.events = $scope[show];
         };
 
+        $scope.fixText = function (text) {
+            return nl2br(deBB(text));
+        }
+
         $scope.doRefresh = function() {
             $scope.refresh();
             $scope.$broadcast('scroll.refreshComplete');
@@ -845,6 +849,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.refresh = function() {
             ServerAPI.get(ServerEventDetail, function(data) {
                 $scope.event = data.data;
+                $scope.description = nl2br(deBB(data.data.description))
                 $scope.event.beforeClose = (new Date($scope.event.closeTime) > new Date());
 
                 $translate("eventAttendance.eventType.UNDECIDED.caption").then(function(string) {
@@ -870,7 +875,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             return $sce.trustAsHtml(html_code);
         };
     })
-    .controller("DiscussionDetailCtrl", function($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+    .controller("DiscussionDetailCtrl", function ($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost, ServerDiscussionPostEdit, ServerDiscussionPostDelete) {
         $scope.loadedPages = 1;
         $scope.modal = false;
         $scope.$storage = $localStorage;
@@ -879,8 +884,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
 
         $scope.$on('$ionicView.beforeEnter', function() {
             $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
-            $scope.resetLookup();
             $scope.serverUrl = "http://" + TS.Server.url;
+            $scope.resetLookup();
         });
 
         $scope.search = {
@@ -891,7 +896,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.resetLookup = function() {
             $scope.search.string = "";
             $scope.search.user = 0;
-            $scope.refresh(1, true);
+            $scope.refresh(0, true);
         }
 
         $scope.lookup = function() {
@@ -924,7 +929,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             $scope.placeholder = parseHtmlEnteties(string);
         });
         $scope.loadMoreNews = function() {
-            $scope.refresh($scope.loadedPages++);
+            $scope.refresh(++$scope.loadedPages);
         };
 
         $scope.moreDataCanBeLoaded = function() {
@@ -939,6 +944,18 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         };
 
         $scope.textareaStyle = false;
+
+        $scope.isAuthor = function (post) {
+            return post && post.createdById == TS.User.id;
+        };
+
+        $scope.canEdit = function (post) {
+            return $scope.isAuthor(post);
+        };
+
+        $scope.canStick = function (post) {
+            return $scope.canEdit(post) && $scope.discussion && $scope.discussion.canStick;
+        };
 
         $scope.copy = function(post) {
             $ionicLoading.show({
@@ -963,13 +980,19 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                 return "positive";
             }
         };
-        $scope.setClass = function(sticky) {
-            if (sticky === true) {
-                return "assertive";
+        $scope.setClass = function (post) {
+            names = [];
+            if (post.sticky === true) {
+                names.push("sticky");
             }
-            /**
-             * @todo  oznacovat autorovy prispevky necim
-             */
+            if ($scope.isAuthor(post)) {
+                names.push("author");
+            }
+            if (post.newPost) {
+                names.push("new");
+            }
+
+            return names.join(" ");
         };
 
         $translate("discussion.loading").then(function(string) {
@@ -1004,6 +1027,59 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         };
 
+        $scope.delete = function (post) {
+            $translate("discussion.deleting").then(function (string) {
+                $ionicLoading.show({
+                    template: string
+                });
+            });
+
+            ServerAPI.delete(
+                ServerDiscussionPostDelete,
+                function (data) {
+                    $scope.posts = ListView.all(master);
+                    $translate("discussion.saved").then(function (string) {
+                        $ionicLoading.show({
+                            template: string,
+                            duration: 900
+                        });
+                    });
+                    $scope.refresh(1, true);
+                },
+                {
+                    discussionId: $stateParams.discussionId,
+                    postId: post.id
+                });
+        };
+
+        $scope.toggleSticky = function (post) {
+            $translate("discussion.sticking").then(function (string) {
+                $ionicLoading.show({
+                    template: string
+                });
+            });
+            ServerAPI.update(
+                ServerDiscussionPostEdit,
+                function (data) {
+                    $scope.posts = ListView.all(master);
+                    $translate("discussion.saved").then(function (string) {
+                        $ionicLoading.show({
+                            template: string,
+                            duration: 900
+                        });
+                    });
+                    $scope.refresh(1, true);
+                },
+                {
+                    discussionId: $stateParams.discussionId,
+                    postId: post.id,
+                    post: {
+                        sticky: !post.sticky
+                    }
+                }
+            );
+        };
+
         $scope.dirtyNews = function() {
             if ($scope.$storage.totalNewPosts > 0) {
                 $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
@@ -1020,7 +1096,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
         };
 
-        $scope.refresh = function(page, clearPosts) {
+        $scope.refresh = function (page, clearPosts) {
             page = page || 1;
             clearPosts = clearPosts || false;
             ServerAPI.get(ServerDiscussionDetail, function(data) {
@@ -1032,6 +1108,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                 for (var i in data.data.posts) {
                     if (angular.isDefined(data.data.posts[i].post)) {
                         data.data.posts[i].post = data.data.posts[i].post.stripSlashes();
+                        data.data.posts[i].post = deBB(data.data.posts[i].post);
                         ListView.add(master, data.data.posts[i]);
                     }
                 }

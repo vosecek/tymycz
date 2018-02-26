@@ -3,8 +3,8 @@
         <button class="button button-icon ion-android-search" ng-click="showSearch()"></button>
     </ion-nav-buttons>
     <ion-nav-title>{{data.discussion.caption}}</ion-nav-title>
-    <div class='discussion-post'>
-        <ion-content class="padding">
+    <div class='discussion-list'>
+        <ion-content class="padding" overflow-scroll="true">
             <form class="list" ng-if="discussion.canWrite === true">
                 <label class="item item-input" name="comment">
                     <textarea style="max-height:45vh;" id="comment" msd-elastic ng-model="form.comment" translate translate-attr-placeholder="{{placeholder}}" translate-value-browser="{{discussion.form.placeholder}}"></textarea>
@@ -15,18 +15,20 @@
                 <button class='button button-small button-assertive icon-left ion-trash-a' ng-click="resetLookup()"><span translate>{{'discussion.search.reset'}}</span></button>
                 <div class=''><span translate>{{'discussion.search.resultFor'}}:</span>&nbsp;<b>{{search.string}}</b> </div>
             </div>
-            <div class="list card" ng-repeat="post in posts">
-                <div class="item item-divider" ng-click="copy(post)" ng-class="setClassHeader(post)">
-                    <img ng-src='{{serverUrl}}{{post.createdBy.pictureUrl}}' class='thumb'> {{post.createdBy.callName}}, {{post.createdAtStr}}
-                    <span href="#" class="item-icon-right">
-                <i class="icon ion-ios-copy-outline"></i>
-            </span>
+            <ion-list can-swipe="true">
+              <ion-item class="list card" ng-repeat="post in posts" ng-class="setClass(post)">
+                <h2>
+                  <img ng-src='{{serverUrl}}{{post.createdBy.pictureUrl}}' class='thumb'>
+                  {{post.createdBy.callName}}, {{post.createdAtStr}}
+                </h2>
+                <div class="discussion-item discussion-item-body">
+                  <div class="post-detail" ng-bind-html="post.post"></div>
                 </div>
-                <div class="item item-body" ng-class="setClass(post.sticky)">
-                    <div class='post-detail' ng-bind-html="post.post">
-                    </div>
-                </div>
-            </div>
+                <ion-option-button ng-click="copy(post)" class="icon ion-ios-copy-outline"></ion-option-button>
+                <ion-option-button ng-if="canStick(post)" ng-click="toggleSticky(post)" ng-class="post.sticky ? 'button-positive' : 'button-negative'" class="icon ion-pin"></ion-option-button>
+                <ion-option-button ng-if="discussion.canDelete" ng-click="delete(post)" class="button-assertive icon ion-trash-a"></ion-option-button>
+              </ion-item>
+            </ion-list>
             <ion-infinite-scroll on-infinite="loadMoreNews()" ng-if="moreDataCanBeLoaded()">
             </ion-infinite-scroll>
         </ion-content>

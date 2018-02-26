@@ -1,4 +1,4 @@
-/* Empty. Add your own CSS if you like */
+﻿/* Empty. Add your own CSS if you like */
 
 .center {
     text-align: center;
@@ -34,15 +34,62 @@
     margin-bottom: 1em;
 }
 
-.discussion-post .item {
+.discussion-list .discussion-item {
     font-size: 85%;
     line-height: 1.3em;
 }
 
-.discussion-post .item {
-    padding: 5px 10px;
+.discussion-list .discussion-item {
+  padding: 5px 10px;
 }
 
-.discussion-post .item-body {
-    padding: 10px;
+.discussion-list .post-detail {
+  padding: 10px;
+  white-space: normal;
+}
+
+.discussion-list .item-content {
+  padding: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0px, 0px, 0px);
+}
+
+.discussion-list .sticky {
+  border-color: #ff6a00;
+}
+
+.discussion-list .sticky .item-content {
+  background-color: #ffd800;
+}
+
+.discussion-list .card {
+  padding: 0px;
+}
+
+.discussion-list .author h2:after {
+  content: "👱";
+  float: right;
+}
+
+.discussion-list .new .item-content {
+  background-color: #bfa;
+}
+
+.discussion-list .new {
+  border-color: #9D8;
+}
+
+.discussion-list .new h2:after {
+  content: "⭐";
+  float: right;
+}
+
+
+.collapsed {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: 2em;
+  line-height: 2em;
 }

@@ -47,25 +47,27 @@
 			"button": "Uložit"
 		}
 	},
-	"discussion": {
-		"search": {
-			"title": "Prohledat diskuzi",
-			"button": "Hledej",
-			"user": "Uživatel",
-			"anyone": "kdokoli",
-			"string": "Hledat:",
-			"button": "Vyhledat",
-			"reset": "Zrušit hledání",
-			"resultFor": "Vyhledáno na dotaz"
-		},
-		"loading": "Načítám diskuzi",
-		"sending": "Odesílám komentář ...",
-		"saved": "Příspěvek vložen",
-		"form": {
-			"placeholder": "Nový příspěvek",
-			"newPost": "Vložit"
-		}
-	},
+  "discussion": {
+    "search": {
+      "title": "Prohledat diskuzi",
+      "button": "Hledej",
+      "user": "Uživatel",
+      "anyone": "kdokoli",
+      "string": "Hledat:",
+      "button": "Vyhledat",
+      "reset": "Zrušit hledání",
+      "resultFor": "Vyhledáno na dotaz"
+    },
+    "loading": "Načítám diskuzi",
+    "sending": "Odesílám komentář ...",
+    "sticking": "Připínám/odepínám komentář ...",
+    "deleting": "Mažu komentář ...",
+    "saved": "Příspěvek vložen",
+    "form": {
+      "placeholder": "Nový příspěvek",
+      "newPost": "Vložit"
+    }
+  },
 	"eventAttendance": {
 		"placeholder": "Poznámka k účasti"
 	},
