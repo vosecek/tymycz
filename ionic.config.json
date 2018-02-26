@@ -9,5 +9,9 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
-  ]
+  ],
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic1"
 }
