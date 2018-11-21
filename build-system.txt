@@ -1,0 +1,4 @@
+ionic cordova build android --release --prod --aot
+zipalign -v -p 4 platforms/android/build/outputs/apk/android-release-unsigned.apk aligned.apk
+apksigner sign --ks ~/ionic/secret/vosecek.keystore --out signed.apk aligned.apk
+apksigner verify signed.apk
