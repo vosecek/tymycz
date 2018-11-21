@@ -5,7 +5,7 @@
 </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/tab/events/{{event.id}}">
+      <ion-item class="item-remove-animate item-icon-right" ng-repeat="event in events|orderBy:'startTime':(show=='inFuture'?false:true)" type="item-text-wrap" href="#/tab/events/{{event.id}}">
         <h2>{{event.caption}}</h2>
         <p>{{event.description}}</p>
         <p>{{event.startTime | date:"dd.MM.yyyy HH:mm"}}</p>

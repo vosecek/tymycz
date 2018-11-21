@@ -368,7 +368,7 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
                 }
             });
 
-            data = inFuture.reverse();
+            data = inFuture;
             $scope.events = data.slice(0, 3);
 
             angular.forEach($scope.events, function(event) {

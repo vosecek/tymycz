@@ -29,7 +29,8 @@ TS.factory('ServerDiscussions', ['$resource', function($resource) {
 }]);
 TS.factory('ServerEvents', ['$resource', function($resource) {
     return $resource('http://:url/api/events/withMyAttendance', {
-        "order": "startTime__desc",
+        "order": "startTime__asc",
+        "filter": "startTime>" + [new Date().getFullYear(), (new Date().getMonth() < 9 ? "0" : "") + (new Date().getMonth() + 1), (new Date().getDate() < 10 ? "0" : "") + new Date().getDate()].join(""),
         "limit": 50
     });
 }]);
