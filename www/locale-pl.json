@@ -1,0 +1,98 @@
+{
+    "general": {
+        "unknownGender": "nieustawiona",
+        "isOffline": "Nie udało się połączyć z internetem.",
+        "switch": "Łączę z",
+        "refresher": "Odświeżanie",
+        "back": "Powrót"
+    },
+    "dashboard": {
+        "title": "Przegląd",
+        "discussionsWithNewComments": "Kanały z nowymi komentarzami",
+        "allDiscussions": "Wszystkie kanały",
+        "closestEvents": "Najbliższe wydarzenia",
+        "allEvents": "Wszystkie wydarzenia"
+    },
+    "login": {
+        "title": "Logowanie",
+        "login": "Trwa logowanie",
+        "newTeamSaved": "Nowy zespół został utworzony. Możesz edytować go w ustawieniach.",
+        "notSupported": "Domena nie istnieje albo ten zespół nie jest objęta płatnym programem.",
+        "logout": "Trwa wylogowanie",
+        "form": {
+            "server": "Domena (bez tymy.cz)",
+            "username": "Nazwa użytkownika",
+            "password": "Hasło",
+            "saveAccess": "Zapamiętaj dane",
+            "button": "Zaloguj"
+        }
+    },
+    "attendance": {
+        "updated": "Deklaracja zaktualizowana",
+        "error": "Błąd przy zapisie deklaracji na serwerze"
+    },
+    "user": {
+        "title": "Moje konto",
+        "error": "Błąd przy odczycie danych użytkownika",
+        "teamRemoved": "Zespół usunięty",
+        "updated": "Konto zaktualizowane",
+        "newAutoLogin": "Automatyczne logowanie jest niedozwolone w zespole:",
+        "lastLogin": "Ostatnie logowanie",
+        "teamData": {
+            "address": "WWW",
+            "callName": "Twoja nazwa forum",
+            "username": "Nazwa użytkownika",
+            "newPassword": "Nowe hasło",
+            "autoLogin": "Automatyczne logowanie",
+            "button": "Zapisz"
+        }
+    },
+    "discussion": {
+        "search": {
+            "title": "Wyszukaj w dyskusji",
+            "button": "Szukaj",
+            "user": "Użytkownik",
+            "anyone": "ktokolwiek",
+            "string": "Szukaj frazy:",
+            "button": "Szukaj",
+            "reset": "Anuluj wyszukiwanie",
+            "resultFor": "Wyniki dla:"
+        },
+        "loading": "Ładuję kanał",
+        "sending": "Przesyłam komentarz ...",
+        "saved": "Komentarz zapisany",
+        "form": {
+            "placeholder": "Nowy komentarz",
+            "newPost": "Zapisz"
+        }
+    },
+    "eventAttendance": {
+        "placeholder": "Miejsce na komentarz",
+        "eventType": {
+            "UNDECIDED": {
+                "caption": "Niezdecydowani"
+            }
+        }
+    },
+    "discussions": {
+        "title": "Kanały"
+    },
+    "events": {
+        "title": "Wydarzenia"
+    },
+    "about": {
+        "title": "O aplikacji"
+    },
+    "team": {
+        "title": "Zespół"
+    },
+    "eventDetail": {
+        "afterCloseTime": "Zapisy na to wydarzenie są już zamknięte: ",
+        "startTime": "start",
+        "endTime": "koniec",
+        "closeTime": "zamknięcie zapisów",
+        "place": "miejsce",
+        "link": "link",
+        "playersOnly": "Tutaj wyswietlają się tylko Gracze."
+    }
+}
