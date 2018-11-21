@@ -1,31 +1,31 @@
-String.prototype.stripSlashes = function() {
+String.prototype.stripSlashes = function () {
     return this.replace(/\\(.)/mg, "$1");
 };
 var TC = angular.module('tymy.controllers', []);
 TC.keyboardOpen = false;
 
-window.addEventListener('native.keyboardshow', function() {
+window.addEventListener('native.keyboardshow', function () {
     TC.keyboardOpen = true;
 });
 
-TC.controller('AboutCtrl', function($scope, $window, AppConfig) {
-    $scope.$on('$ionicView.beforeEnter', function(event, viewData) {
+TC.controller('AboutCtrl', function ($scope, $window, AppConfig) {
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
 
     $scope.changelog = AppConfig.changelog;
     $scope.version = AppConfig.version;
 
-    $scope.email = function(email) {
+    $scope.email = function (email) {
         var link = "mailto:" + email + "?subject=Tymy.cz aplikace";
         $window.location.href = link;
     };
 });
 
-app.filter('objectByKeyValFilter', function() {
-    return function(input, filterKey, filterVal) {
+app.filter('objectByKeyValFilter', function () {
+    return function (input, filterKey, filterVal) {
         var filteredInput = {};
-        angular.forEach(input, function(value, key) {
+        angular.forEach(input, function (value, key) {
             if (value[filterKey] && value[filterKey] !== filterVal) {
                 filteredInput[key] = value;
             }
@@ -34,16 +34,26 @@ app.filter('objectByKeyValFilter', function() {
     }
 });
 
-TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $translate, md5, ServerUsers, ServerEventTypes, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
+TC.controller('LoginCtrl', function ($scope, $ionicConfig, $translate, Toast, md5, ServerUsers, ServerEventTypes, $stateParams, $ionicLoading, ServerLogin, ServerAPI, $state, $localStorage, $filter, $timeout) {
     $scope.$storage = $localStorage;
 
-    $translate("general.back").then(function(string) {
+    $translate("general.back").then(function (string) {
         $ionicConfig.backButton.text(parseHtmlEnteties(string));
     });
 
+    $scope.setLang = function (lang) {
+        console.log(lang);
+        $localStorage.lang = lang;
+        $translate.use(lang);
+    };
 
+    var lang = $localStorage.lang;
+    if(lang) {
+        console.log(lang);
+        $translate.use(lang);
+    }
 
-    $scope.$on('$ionicView.loaded', function() {
+    $scope.$on('$ionicView.loaded', function () {
         var record = $filter('filter')($scope.$storage.servers, {
             autoLogin: true
         }, true);
@@ -60,17 +70,17 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
         saveAccess: false
     };
 
-    $scope.switch = function(server) {
+    $scope.switch = function (server) {
         $scope.send(server);
     };
 
     $scope.servers = $localStorage.servers;
 
-    $scope.send = function(loginData) {
+    $scope.send = function (loginData) {
         loginData = loginData || false;
         var newTeam = false;
         $ionicLoading.show({
-            template: $translate("login.login").then(function(string) {
+            template: $translate("login.login").then(function (string) {
                 return string;
             })
         });
@@ -95,7 +105,7 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
         }
 
 
-        ServerLogin.get(loginData, function(data) {
+        ServerLogin.get(loginData, function (data) {
             // zaregistrovat refresh interval
             if (angular.isDefined($scope.refreshNews)) {
                 $interval.cancel($scope.refreshNews);
@@ -114,7 +124,7 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
 
                     if (record.length === 0) {
                         $scope.$storage.servers.push(loginData);
-                        $translate("error.offline").then(function(string) {
+                        $translate("error.offline").then(function (string) {
                             Toast.show(string);
                         });
                         newTeam = true;
@@ -125,22 +135,22 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
                 TS.User = data.data;
                 TS.Server.TSID = data.sessionKey;
 
-                ServerAPI.get(ServerUsers, function(data) {
+                ServerAPI.get(ServerUsers, function (data) {
                     $scope.$storage.Users = data.data;
-                    angular.forEach($scope.$storage.Users, function(obj) {
+                    angular.forEach($scope.$storage.Users, function (obj) {
                         if (angular.isUndefined(obj.gender)) {
-                            $translate("general.unknownGender").then(function(string) {
+                            $translate("general.unknownGender").then(function (string) {
                                 obj.gender = string;
                             });
                         }
                     });
                 });
 
-                ServerAPI.get(ServerEventTypes, function(data) {
+                ServerAPI.get(ServerEventTypes, function (data) {
                     TS.Server.EventTypes = data.data;
 
                     if (newTeam === true) {
-                        $timeout(function() {
+                        $timeout(function () {
                             $state.go('tab.dashboard');
                             $ionicLoading.hide();
                         }, 3000);
@@ -155,14 +165,14 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
                     duration: 2000
                 });
             }
-        }, function(error) {
+        }, function (error) {
             if (error.status == "404") {
-                $translate("login.notSupported").then(function(string) {
+                $translate("login.notSupported").then(function (string) {
                     Toast.show(string);
                 });
             }
             if (error.status == "0") {
-                $translate("general.isOffline").then(function(string) {
+                $translate("general.isOffline").then(function (string) {
                     Toast.show(string);
                 });
             }
@@ -170,16 +180,16 @@ TC.controller('LoginCtrl', function($scope, $ionicConfig, $translate, Toast, $tr
     };
 });
 
-TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUsers, ServerEventTypes, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
+TC.controller('TabCtrl', function ($scope, Toast, $translate, ServerAPI, ServerUsers, ServerEventTypes, $timeout, ListView, $rootScope, $ionicLoading, ServerLogin, $localStorage, $state, $location, $ionicSideMenuDelegate, $ionicHistory, $ionicPlatform) {
     $scope.$storage = $localStorage;
     $scope.data = {};
 
-    $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $scope.servers = $scope.$storage.servers;
         $scope.data = TS.User;
     });
 
-    $scope.setIcon = function(server) {
+    $scope.setIcon = function (server) {
         if (server.url == TS.Server.url && server.user == TS.Server.user) {
             return 'ion-ios-circle-filled';
         } else {
@@ -187,19 +197,19 @@ TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUs
         }
     };
 
-    $scope.setClass = function(server) {
+    $scope.setClass = function (server) {
         if (server.url == TS.Server.url && server.user == TS.Server.user) {
             return "calm";
         }
         return false;
     };
 
-    $scope.switch = function(team) {
+    $scope.switch = function (team) {
         TS.Server.setTeam(team);
         TS.Server.TSID = false;
         $scope.data.saveAccess = false;
 
-        $translate("login.switch").then(function(string) {
+        $translate("login.switch").then(function (string) {
             Toast.show(string + team.url);
         });
 
@@ -209,7 +219,7 @@ TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUs
             password: TS.Server.password
         };
 
-        ServerLogin.get(loginData, function(data) {
+        ServerLogin.get(loginData, function (data) {
                 $scope.$storage = $localStorage;
                 $scope.$storage.freshTeam = true;
                 $scope.$storage.totalNewPosts = 0;
@@ -220,24 +230,24 @@ TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUs
                     TS.Server.TSID = data.sessionKey;
                     ListView.clearAll();
 
-                    ServerAPI.get(ServerUsers, function(data) {
+                    ServerAPI.get(ServerUsers, function (data) {
                         $scope.$storage.Users = data.data;
-                        angular.forEach($scope.$storage.Users, function(obj) {
+                        angular.forEach($scope.$storage.Users, function (obj) {
                             if (angular.isUndefined(obj.gender)) {
-                                $translate("general.unknownGender").then(function(string) {
+                                $translate("general.unknownGender").then(function (string) {
                                     obj.gender = string;
                                 });
                             }
                         });
                     });
 
-                    ServerAPI.get(ServerEventTypes, function(data) {
+                    ServerAPI.get(ServerEventTypes, function (data) {
                         TS.Server.EventTypes = data.data;
                         $ionicLoading.hide();
                         $state.go('tab.dashboard');
                     });
 
-                    $timeout(function() {
+                    $timeout(function () {
                         $ionicHistory.clearCache();
                         $ionicHistory.nextViewOptions({
                             disableBack: true
@@ -254,16 +264,16 @@ TC.controller('TabCtrl', function($scope, Toast, $translate, ServerAPI, ServerUs
                     $state.go('start.login');
                 }
             },
-            function(error) {
+            function (error) {
                 $state.go('start.login');
                 $ionicLoading.hide();
             });
     };
 });
-TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
+TC.controller('DashboardCtrl', function ($scope, $ionicModal, Toast, $translate, $ionicScrollDelegate, $localStorage, $interval, $rootScope, $ionicListDelegate, $filter, ServerAttendance, $ionicHistory, $state, ListView, ServerEventDetail, ServerAPI, ServerDiscussions, ServerEvents, $ionicLoading) {
     $scope.$storage = $localStorage;
 
-    $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $ionicScrollDelegate.scrollTop();
         if ($scope.$storage.freshTeam === true) {
             $scope.$storage.freshTeam = true;
@@ -273,25 +283,25 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
         $scope.data.serverCallName = TS.Server.callName;
     });
 
-    $scope.$on('$ionicView.loaded', function() {
-        $scope.refreshNews = $interval(function() {
+    $scope.$on('$ionicView.loaded', function () {
+        $scope.refreshNews = $interval(function () {
             $scope.loadNews();
         }, 60000);
     });
 
-    $scope.loadNews = function() {
+    $scope.loadNews = function () {
         $scope.$storage.totalNewPosts = 0;
         $scope.$storage.serverNewPosts = 0;
 
-        angular.forEach($scope.$storage.servers, function(server) {
+        angular.forEach($scope.$storage.servers, function (server) {
             ServerDiscussions.get({
                 url: server.url,
                 login: server.user,
                 password: server.password
-            }, function(data) {
+            }, function (data) {
                 if (data.status == "OK") {
                     server.newPosts = 0;
-                    angular.forEach(data.data, function(discussion) {
+                    angular.forEach(data.data, function (discussion) {
                         server.newPosts = server.newPosts + discussion.newPosts;
                     });
                     if (server.url == TS.Server.url && server.user == TS.Server.user) {
@@ -303,24 +313,24 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
         });
     };
 
-    $scope.humanAttendance = function(event) {
+    $scope.humanAttendance = function (event) {
         return ServerAPI.humanAttendance(event);
     };
 
-    $scope.go = function(target) {
+    $scope.go = function (target) {
         $state.go(target);
     };
 
-    $scope.setAttendance = function(code, event) {
+    $scope.setAttendance = function (code, event) {
         var data = [{
             userId: TS.User.id,
             eventId: event.id,
             preStatus: code,
         }];
 
-        ServerAPI.http(ServerAttendance, function(data) {
-            ServerAPI.get(ServerEventDetail, function(data) {
-                $translate("attendance.updated").then(function(string) {
+        ServerAPI.http(ServerAttendance, function (data) {
+            ServerAPI.get(ServerEventDetail, function (data) {
+                $translate("attendance.updated").then(function (string) {
                     Toast.show(string);
                 });
                 $ionicListDelegate.closeOptionButtons();
@@ -336,14 +346,14 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
         }, angular.toJson(data));
     };
 
-    $scope.newPosts = function(p) {
+    $scope.newPosts = function (p) {
         return p.newPosts > 0;
     };
 
     var discussions = "discussions";
 
-    $scope.refreshDiscussions = function() {
-        ServerAPI.get(ServerDiscussions, function(data) {
+    $scope.refreshDiscussions = function () {
+        ServerAPI.get(ServerDiscussions, function (data) {
             ListView.clear(discussions);
             for (var i in data.data) {
                 ListView.add(discussions, data.data[i]);
@@ -353,16 +363,16 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
     };
 
     var events = "events";
-    $scope.refreshEvents = function() {
+    $scope.refreshEvents = function () {
         $scope.events = [];
-        ServerAPI.get(ServerEvents, function(data) {
+        ServerAPI.get(ServerEvents, function (data) {
             ListView.clear(events);
             for (var i in data.data) {
                 ListView.add(events, data.data[i]);
             }
 
             $scope.events = [];
-            var inFuture = ListView.all(events).filter(function(el) {
+            var inFuture = ListView.all(events).filter(function (el) {
                 if (el.inFuture === true || (el.inFuture === false && el.inPast === false)) {
                     return true;
                 }
@@ -371,13 +381,13 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
             data = inFuture;
             $scope.events = data.slice(0, 3);
 
-            angular.forEach($scope.events, function(event) {
+            angular.forEach($scope.events, function (event) {
                 event.eventType = ServerAPI.detectEventType(event);
             });
         });
     };
 
-    $scope.setAttendanceButton = function(status) {
+    $scope.setAttendanceButton = function (status) {
         if (status.code == "YES") {
             return "ion-ios-checkmark button-balanced";
         }
@@ -392,7 +402,7 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
         }
     };
 
-    $scope.setAttendanceBadge = function(status) {
+    $scope.setAttendanceBadge = function (status) {
         if (status.preStatus == "YES") {
             return "badge-balanced";
         }
@@ -407,31 +417,31 @@ TC.controller('DashboardCtrl', function($scope, $ionicModal, Toast, $translate, 
         }
     };
 
-    $scope.doRefresh = function() {
+    $scope.doRefresh = function () {
         $scope.loadNews();
         $scope.refreshEvents();
         $scope.refreshDiscussions();
         $scope.$broadcast('scroll.refreshComplete');
     };
 });
-TC.controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, ServerAPI, $ionicLoading) {
-    $scope.$on('$ionicView.beforeEnter', function() {
+TC.controller('DiscussionsCtrl', function ($scope, ListView, ServerDiscussions, ServerAPI, $ionicLoading) {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $scope.refresh();
     });
 
     var master = "discussions";
 
-    $scope.$on("doRefresh", function() {
+    $scope.$on("doRefresh", function () {
         $scope.doRefresh();
     });
 
-    $scope.doRefresh = function() {
+    $scope.doRefresh = function () {
         $scope.refresh();
         $scope.$broadcast('scroll.refreshComplete');
     };
 
-    $scope.refresh = function() {
-        ServerAPI.get(ServerDiscussions, function(data) {
+    $scope.refresh = function () {
+        ServerAPI.get(ServerDiscussions, function (data) {
             ListView.clear(master);
             for (var i in data.data) {
                 ListView.add(master, data.data[i]);
@@ -440,25 +450,25 @@ TC.controller('DiscussionsCtrl', function($scope, ListView, ServerDiscussions, S
         });
     };
 });
-TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar, $state, $filter) {
+TC.controller('TeamCtrl', function ($scope, $localStorage, $ionicFilterBar, $state, $filter) {
     $scope.$storage = $localStorage;
-    $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $scope.users = $filter("orderBy")($scope.$storage.Users, "displayName");
     });
 
-    $scope.detail = function(id) {
+    $scope.detail = function (id) {
         $state.go("tab.user", {
             userId: id
         });
     };
 
-    $scope.showFilterBar = function() {
+    $scope.showFilterBar = function () {
         filterBarInstance = $ionicFilterBar.show({
             items: $scope.users,
-            update: function(filteredItems) {
+            update: function (filteredItems) {
                 $scope.users = filteredItems;
             },
-            expression: function(filterText, value, index, array) {
+            expression: function (filterText, value, index, array) {
                 var re = new RegExp(filterText, "gi");
                 if (angular.isDefined(value.firstName)) {
                     if (value.firstName.match(re)) {
@@ -486,9 +496,9 @@ TC.controller('TeamCtrl', function($scope, $localStorage, $ionicFilterBar, $stat
 
 
 });
-TC.controller('UserCtrl', function($scope, Toast, $translate, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window, $ionicLoading) {
+TC.controller('UserCtrl', function ($scope, Toast, $translate, ServerAPI, ServerUserDetail, $localStorage, $filter, $stateParams, $window, $ionicLoading) {
     $scope.$storage = $localStorage;
-    $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $scope.userId = $stateParams.userId;
         var record = $filter('filter')($scope.$storage.Users, {
             id: $scope.userId * 1
@@ -498,31 +508,31 @@ TC.controller('UserCtrl', function($scope, Toast, $translate, ServerAPI, ServerU
             $scope.data = record[0];
             $scope.data.pictureUrl = TS.Server.fullUrl() + $scope.data.pictureUrl;
         } else {
-            $translate("user.error").then(function(string) {
+            $translate("user.error").then(function (string) {
                 Toast.show(string);
             });
 
         }
     });
-    $scope.email = function() {
+    $scope.email = function () {
         var link = "mailto:" + $scope.data.email + "?subject=Tymy.cz";
         $window.location.href = link;
     };
 });
-TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
+TC.controller('AccountCtrl', function ($scope, $translate, Toast, $ionicModal, $localStorage, $filter, $ionicLoading, $timeout, $ionicHistory, $state) {
     $scope.$storage = $localStorage;
 
-    $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $scope.servers = $localStorage.servers;
         $scope.data = TS.User;
     });
 
-    $scope.logout = function() {
-        $translate("login.logout").then(function(string) {
+    $scope.logout = function () {
+        $translate("login.logout").then(function (string) {
             Toast.show(string);
         });
 
-        $timeout(function() {
+        $timeout(function () {
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();
             $state.go('start.login', {}, {
@@ -531,7 +541,7 @@ TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $l
         }, 100);
     };
 
-    $scope.dropTeam = function(server) {
+    $scope.dropTeam = function (server) {
         var record = $filter('filter')($scope.$storage.servers, {
             url: server.url,
             user: server.user
@@ -539,30 +549,30 @@ TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $l
         var index = $scope.$storage.servers.indexOf(record[0]);
         $scope.$storage.servers.splice(index, 1);
         $scope.closeModal();
-        $translate("user.teamRemoved").then(function(string) {
+        $translate("user.teamRemoved").then(function (string) {
             Toast.show(string);
         });
 
     };
 
     $ionicModal.fromTemplateUrl('templates/team-configuration.html', {
-            scope: $scope,
-            animation: 'slide-in-up'
-        })
-        .then(function(modal) {
+        scope: $scope,
+        animation: 'slide-in-up'
+    })
+        .then(function (modal) {
             $scope.modal = modal;
         });
 
-    $scope.openModal = function() {
+    $scope.openModal = function () {
         $scope.modal.show();
     };
 
-    $scope.closeModal = function() {
+    $scope.closeModal = function () {
         $scope.modal.hide();
     };
 
-    $scope.saveData = function() {
-        $translate("user.updated").then(function(string) {
+    $scope.saveData = function () {
+        $translate("user.updated").then(function (string) {
             Toast.show(string);
         });
         var record = $filter('filter')($scope.$storage.servers, {
@@ -573,9 +583,9 @@ TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $l
         record[0].user = $scope.data.user;
 
         if ($scope.data.autoLogin === true) {
-            angular.forEach($scope.$storage.servers, function(obj) {
+            angular.forEach($scope.$storage.servers, function (obj) {
                 if (obj.autoLogin === true && (obj.url !== record[0].url || obj.user !== record[0].user)) {
-                    $translate("user.newAutoLogin").then(function(string) {
+                    $translate("user.newAutoLogin").then(function (string) {
                         Toast.show(string + " " + obj.callName);
                     });
                 }
@@ -589,10 +599,10 @@ TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $l
         $scope.closeModal();
     };
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
         $scope.modal.remove();
     });
-    $scope.configure = function(team) {
+    $scope.configure = function (team) {
         var record = $filter('filter')($scope.$storage.servers, {
             url: team.url,
             user: team.user
@@ -602,69 +612,69 @@ TC.controller('AccountCtrl', function($scope, $translate, Toast, $ionicModal, $l
         $scope.openModal();
     };
 });
-TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, $ionicLoading) {
-        $scope.$on('$ionicView.beforeEnter', function() {
-            $scope.refresh();
-        });
-        $scope.switch = function(show, silent) {
-            silent = silent || false;
-            $scope.show = show;
-            if (silent === false) {
-                $ionicLoading.show({
-                    template: '<ion-spinner icon="circles"></ion-spinner>',
-                    duration: 250
-                });
-            }
-            $scope.events = $scope[show];
-        };
-
-        $scope.doRefresh = function() {
-            $scope.refresh();
-            $scope.$broadcast('scroll.refreshComplete');
-        };
-
-        var events = "events";
-        $scope.refresh = function() {
-            ServerAPI.get(ServerEvents, function(data) {
-                ListView.clear(events);
-                for (var i in data.data) {
-                    ListView.add(events, data.data[i]);
-                }
-                $scope.events = ListView.all(events);
-                angular.forEach($scope.events, function(el) {
-                    if (el.inPast === false && el.inFuture === false) {
-                        el.inFuture = true;
-                    }
-                });
-
-                $scope.inFuture = $scope.events.filter(function(el) {
-                    if (el.inFuture === true) {
-                        return true;
-                    }
-                });
-                $scope.inPast = $scope.events.filter(function(el) {
-                    if (el.inPast === true) {
-                        return true;
-                    }
-                });
-                $scope.inFuture = $scope.inFuture.slice().reverse();
-                $scope.switch("inFuture", true);
+TC.controller('EventsCtrl', function ($scope, ListView, ServerEvents, ServerAPI, $ionicLoading) {
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $scope.refresh();
+    });
+    $scope.switch = function (show, silent) {
+        silent = silent || false;
+        $scope.show = show;
+        if (silent === false) {
+            $ionicLoading.show({
+                template: '<ion-spinner icon="circles"></ion-spinner>',
+                duration: 250
             });
-        };
-    })
-    .controller("EventDetailCtrl", function($ionicConfig, $ionicScrollDelegate, $translate, Toast, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
+        }
+        $scope.events = $scope[show];
+    };
+
+    $scope.doRefresh = function () {
+        $scope.refresh();
+        $scope.$broadcast('scroll.refreshComplete');
+    };
+
+    var events = "events";
+    $scope.refresh = function () {
+        ServerAPI.get(ServerEvents, function (data) {
+            ListView.clear(events);
+            for (var i in data.data) {
+                ListView.add(events, data.data[i]);
+            }
+            $scope.events = ListView.all(events);
+            angular.forEach($scope.events, function (el) {
+                if (el.inPast === false && el.inFuture === false) {
+                    el.inFuture = true;
+                }
+            });
+
+            $scope.inFuture = $scope.events.filter(function (el) {
+                if (el.inFuture === true) {
+                    return true;
+                }
+            });
+            $scope.inPast = $scope.events.filter(function (el) {
+                if (el.inPast === true) {
+                    return true;
+                }
+            });
+            $scope.inFuture = $scope.inFuture.slice().reverse();
+            $scope.switch("inFuture", true);
+        });
+    };
+})
+    .controller("EventDetailCtrl", function ($ionicConfig, $ionicScrollDelegate, $translate, Toast, $localStorage, $state, $scope, ServerAttendance, $filter, ServerAPI, $sce, ServerEventDetail, $stateParams, ListView, $ionicLoading, $ionicHistory) {
         $scope.$storage = $localStorage;
 
         $scope.placeholder = "";
-        $translate("eventAttendance.placeholder").then(function(string) {
+        $translate("eventAttendance.placeholder").then(function (string) {
             $scope.placeholder = parseHtmlEnteties(string);
         });
 
-        $scope.resize = function() {
+        $scope.resize = function () {
             $ionicScrollDelegate.resize();
         }
 
-        $scope.code2caption = function(code) {
+        $scope.code2caption = function (code) {
             for (var i = 0; i < $scope.event.eventType.preStatusSet.length; ++i) {
                 var status = $scope.event.eventType.preStatusSet[i];
                 console.log(status);
@@ -674,7 +684,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
         }
 
-        $scope.statusColor = function(status) {
+        $scope.statusColor = function (status) {
             if (status == "YES") {
                 return "balanced";
             }
@@ -689,8 +699,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
         }
 
-        $scope.$on('$ionicView.enter', function(event, viewData) {
-            $scope.$watch('myAttendance.preDescription', function(newValue, oldValue) {
+        $scope.$on('$ionicView.enter', function (event, viewData) {
+            $scope.$watch('myAttendance.preDescription', function (newValue, oldValue) {
                 if (typeof oldValue != "undefined" && oldValue.length > 0 && newValue !== oldValue) {
                     buttons = document.querySelector('.button-bar').getElementsByTagName('button');
                     for (var i = 0; i < buttons.length; ++i) {
@@ -701,7 +711,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         });
 
-        $scope.go = function(target) {
+        $scope.go = function (target) {
             $ionicHistory.nextViewOptions({
                 disableBack: true
             });
@@ -712,14 +722,14 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.female = {};
         $scope.unknown = {};
 
-        $scope.genderAttendance = function(attendance) {
-            angular.forEach($scope.event.eventType.preStatusAttendance, function(status) {
+        $scope.genderAttendance = function (attendance) {
+            angular.forEach($scope.event.eventType.preStatusAttendance, function (status) {
                 status = status.code;
 
                 var male = [];
                 var female = [];
                 var unknown = [];
-                angular.forEach(attendance[status], function(el) {
+                angular.forEach(attendance[status], function (el) {
                     user = $filter('filter')($scope.$storage.Users, {
                         id: el.userId
                     }, true);
@@ -760,7 +770,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         };
 
-        $scope.outputGenderAttendance = function(status) {
+        $scope.outputGenderAttendance = function (status) {
             var output = [];
             output.push("<i class='icon ion-male'></i> " + $scope.male[status].length);
             output.push("<i class='icon ion-female'></i> " + $scope.female[status].length);
@@ -770,11 +780,11 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             return "(" + output.join(", ") + ")";
         }
 
-        $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.$on('$ionicView.beforeEnter', function () {
             $scope.refresh();
         });
 
-        $scope.buttonAttendance = function(status) {
+        $scope.buttonAttendance = function (status) {
             if (status == $scope.myAttendance.preStatus) {
                 if (status == "YES") {
                     return "button-balanced";
@@ -791,7 +801,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
         };
 
-        $scope.setAttendance = function(code) {
+        $scope.setAttendance = function (code) {
             var data = [{
                 userId: TS.User.id,
                 eventId: $stateParams.eventId,
@@ -799,8 +809,8 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
                 preDescription: $scope.myAttendance.preDescription
             }];
 
-            ServerAPI.http(ServerAttendance, function(data) {
-                $translate("attendance.updated").then(function(string) {
+            ServerAPI.http(ServerAttendance, function (data) {
+                $translate("attendance.updated").then(function (string) {
                     Toast.show(string);
                 });
                 $scope.refresh();
@@ -811,7 +821,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
          * sestavit celkovou dochazku na udalosti
          * @return {[type]} [description]
          */
-        $scope.detectAttendance = function() {
+        $scope.detectAttendance = function () {
             $scope.attendance = {};
             $scope.attendance.UNDECIDED = [];
             for (var i in $scope.event.attendance) {
@@ -842,12 +852,12 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
             console.log($scope.attendance);
         };
-        $scope.refresh = function() {
-            ServerAPI.get(ServerEventDetail, function(data) {
+        $scope.refresh = function () {
+            ServerAPI.get(ServerEventDetail, function (data) {
                 $scope.event = data.data;
                 $scope.event.beforeClose = (new Date($scope.event.closeTime) > new Date());
 
-                $translate("eventAttendance.eventType.UNDECIDED.caption").then(function(string) {
+                $translate("eventAttendance.eventType.UNDECIDED.caption").then(function (string) {
                     var attUndecided = {
                         caption: parseHtmlEnteties(string),
                         code: "UNDECIDED",
@@ -866,18 +876,18 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         };
 
-        $scope.renderHtml = function(html_code) {
+        $scope.renderHtml = function (html_code) {
             return $sce.trustAsHtml(html_code);
         };
     })
-    .controller("DiscussionDetailCtrl", function($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
+    .controller("DiscussionDetailCtrl", function ($scope, $ionicModal, $translate, Toast, $ionicHistory, $filter, $localStorage, $ionicLoading, $resource, $stateParams, ListView, ServerDiscussionDetail, $sce, ServerAPI, ServerDiscussionPost) {
         $scope.loadedPages = 1;
         $scope.modal = false;
         $scope.$storage = $localStorage;
         $scope.users = $scope.$storage.Users;
         $scope.serverUrl = false;
 
-        $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.$on('$ionicView.beforeEnter', function () {
             $scope.discussion = ListView.get("discussions", $stateParams.discussionId);
             $scope.resetLookup();
             $scope.serverUrl = "http://" + TS.Server.url;
@@ -888,46 +898,46 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             string: ""
         }
 
-        $scope.resetLookup = function() {
+        $scope.resetLookup = function () {
             $scope.search.string = "";
             $scope.search.user = 0;
             $scope.refresh(1, true);
         }
 
-        $scope.lookup = function() {
+        $scope.lookup = function () {
             $scope.closeModal();
             $scope.refresh(1, true);
         };
 
         $ionicModal.fromTemplateUrl('templates/discussion-search.html', {
-                scope: $scope,
-                animation: 'slide-in-up'
-            })
-            .then(function(modal) {
+            scope: $scope,
+            animation: 'slide-in-up'
+        })
+            .then(function (modal) {
                 $scope.modal = modal;
             });
 
-        $scope.showSearch = function() {
+        $scope.showSearch = function () {
             $scope.openModal();
         };
 
-        $scope.openModal = function() {
+        $scope.openModal = function () {
             $scope.modal.show();
         };
 
-        $scope.closeModal = function() {
+        $scope.closeModal = function () {
             $scope.modal.hide();
         };
 
         $scope.placeholder = "";
-        $translate("discussion.form.placeholder").then(function(string) {
+        $translate("discussion.form.placeholder").then(function (string) {
             $scope.placeholder = parseHtmlEnteties(string);
         });
-        $scope.loadMoreNews = function() {
+        $scope.loadMoreNews = function () {
             $scope.refresh($scope.loadedPages++);
         };
 
-        $scope.moreDataCanBeLoaded = function() {
+        $scope.moreDataCanBeLoaded = function () {
             var numberOfPages = 0;
             if (angular.isUndefined($scope.data.paging)) return false;
 
@@ -940,7 +950,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
 
         $scope.textareaStyle = false;
 
-        $scope.copy = function(post) {
+        $scope.copy = function (post) {
             $ionicLoading.show({
                 template: '<ion-spinner icon="lines"></ion-spinner>',
                 duration: 200
@@ -955,15 +965,15 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
         $scope.form = {};
         $scope.form.comment = "";
         var master = "discussionDetail";
-        $scope.renderHtml = function(html_code) {
+        $scope.renderHtml = function (html_code) {
             return $sce.trustAsHtml(html_code);
         };
-        $scope.setClassHeader = function(post) {
+        $scope.setClassHeader = function (post) {
             if (post.newPost == true) {
                 return "positive";
             }
         };
-        $scope.setClass = function(sticky) {
+        $scope.setClass = function (sticky) {
             if (sticky === true) {
                 return "assertive";
             }
@@ -972,23 +982,23 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
              */
         };
 
-        $translate("discussion.loading").then(function(string) {
+        $translate("discussion.loading").then(function (string) {
             $ionicLoading.show({
                 template: string
             });
         });
 
 
-        $scope.post = function() {
-            $translate("discussion.sending").then(function(string) {
+        $scope.post = function () {
+            $translate("discussion.sending").then(function (string) {
                 $ionicLoading.show({
                     template: string
                 });
             });
 
-            ServerAPI.save(ServerDiscussionPost, function(data) {
+            ServerAPI.save(ServerDiscussionPost, function (data) {
                 $scope.posts = ListView.all(master);
-                $translate("discussion.saved").then(function(string) {
+                $translate("discussion.saved").then(function (string) {
                     $ionicLoading.show({
                         template: string,
                         duration: 900
@@ -1004,7 +1014,7 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             });
         };
 
-        $scope.dirtyNews = function() {
+        $scope.dirtyNews = function () {
             if ($scope.$storage.totalNewPosts > 0) {
                 $scope.$storage.totalNewPosts -= $scope.data.discussion.newPosts;
             }
@@ -1020,10 +1030,10 @@ TC.controller('EventsCtrl', function($scope, ListView, ServerEvents, ServerAPI, 
             }
         };
 
-        $scope.refresh = function(page, clearPosts) {
+        $scope.refresh = function (page, clearPosts) {
             page = page || 1;
             clearPosts = clearPosts || false;
-            ServerAPI.get(ServerDiscussionDetail, function(data) {
+            ServerAPI.get(ServerDiscussionDetail, function (data) {
                 $scope.$broadcast('scroll.infiniteScrollComplete');
                 if (clearPosts === true) ListView.clear(master);
                 $ionicLoading.hide();

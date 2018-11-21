@@ -1,114 +1,138 @@
 var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'monospaced.elastic', 'angular-md5', 'ionic', 'tymy.controllers', 'tymy.services', 'jett.ionic.filter.bar', 'ion-alpha-scroll', 'angular.filter', 'pascalprecht.translate'])
 
-.constant('AppConfig', {
-    version: '1.0.2',
-    lang: "cs",
-    changelog: {
-        "1.0.2": {
-            date: "22.5.2017",
-            items: {
-                cs: ["Opětovné přihlášení při vypršení platnosti původního (přizpůsobení na aktualizaci API tymy.cz)"]
-            }
-        },
-        "1.0.1": {
-            date: "21.5.2017",
-            items: {
-                cs: ["Opravy ikony aplikace"]
-            }
-        },
-        "1.0.0": {
-            date: "17.5.2017",
-            items: {
-                cs: ["Telefon a adresa na detailu hráče"]
-            }
-        },
-        "0.9.5": {
-            date: "24.1.2017",
-            items: {
-                cs: ["Ikonky hráčů v docházce a v diskuzi", "Místo a odkaz v detailu události, pokud jsou zadané."]
-            }
-        },
-        "0.9.4": {
-            date: "20.1.2017",
-            items: {
-                cs: ["V seznamu nerozhodnutých uživatelů na události se vypisují pouze Hráči (zadaná docházka Maroda či Člena zobrazena je)"]
-            }
-        },
-        "0.9.3": {
-            date: "11.12.2016",
-            items: {
-                cs: ["Seznam nerozhodnutých uživatelů na detailu události", "Oprava chyby - už nelze změnit účast na akci po uzávěrce"]
-            }
-        },
-        "0.9.2": {
-            date: "1.11.2016",
-            items: {
-                cs: ["Oprava chyby - nezobrazování poznámky k účasti v docházce na události"]
-            }
-        },
-        "0.9.1": {
-            date: "18.9.2016",
-            items: {
-                cs: ["Oprava chyby v Androidu - nabízení akce pro otevření diskuze", "Opravená chyba s názvem aktuálního týmu na Dashboardu při přepnutí týmu"]
-            }
-        },
-        "0.9.0": {
-            date: "15.9.2016",
-            items: {
-                cs: ["Lze otevírat (do systémového prohlížeče) html odkazy v diskuzi či popisu události", "V docházce na události je účast setříděna dle pohlaví do dvou sloupců", "Aktuálně probíhající událost je viditelná jako budoucí", "Při rozkliknutí účasti na události se dá scrollovat snadno dolů"]
-            }
-        },
-        "0.5.0": {
-            date: "5.6.2016",
-            items: {
-                cs: ["Vyhledávání v diskuzi", "Příprava pro multijazyčnost v další verzi", "Toast notifikace namísto celoobrazovkových", "Oprava chyby záporných příspěvků po vložení nového příspěvku"]
-            }
-        },
-        "0.4.5": {
-            date: "12.5.2016",
-            items: {
-                cs: ["Označování nových příspěvků v diskuzi", "Při přepnutí serveru se přehled vyroluje nahoru, aby byly vidět diskuze", "Správný počet nových příspěvků celkem po prvním přihášení"]
-            }
-        },
-        "0.4.3": {
-            date: "19.4.2016",
-            items: {
-                cs: ["Opravené datum konce události", "Načítání starších příspěvků v diskuzi nekonečným scrollováním", "Menší odsazení a menší font v diskuzi pro úsporu místa"]
-            }
-        },
-        "0.4.2": {
-            date: "16.3.2016",
-            items: {
-                cs: ["Vylepšený seznam uživatelů, doplněný o index bar"]
-            }
-        },
-        "0.4.1": {
-            date: "15.3.2016",
-            items: {
-                cs: ["Přehled uživatelů s vyhledáváním"]
-            }
-        },
-        "0.4.0": {
-            date: "3.3.2016",
-            items: {
-                cs: ["Přepracování ovládání na záložky namísto menu"]
-            }
-        },
-        "0.3.4": {
-            date: "25.2.2016",
-            items: {
-                cs: ["Beta verze aplikace, určena pro uživatelské testování v rámci frisbee komunity."]
+    .constant('AppConfig', {
+        version: '1.1.0',
+        lang: "cs",
+        changelog: {
+            "1.1.0": {
+                date: "21.11.2018",
+                items: {
+                    cs: ["Přidání polštiny a francouzštiny"]
+                }
+            },
+            "1.0.8": {
+                date: "9.11.2017",
+                items: {
+                    cs: ["Internal server error oprava"]
+                }
+            },
+            "1.0.7": {
+                date: "1.11.2017",
+                items: {
+                    cs: ["Oprava chybného načítání docházky způsobující Internal server error"]
+                }
+            },
+            "1.0.6": {
+                date: "25.10.2017",
+                items: {
+                    cs: ["Oprava načítání událostí při velkém počtu akcí v budoucnu"]
+                }
+            },
+            "1.0.2": {
+                date: "22.5.2017",
+                items: {
+                    cs: ["Opětovné přihlášení při vypršení platnosti původního (přizpůsobení na aktualizaci API tymy.cz)"]
+                }
+            },
+            "1.0.1": {
+                date: "21.5.2017",
+                items: {
+                    cs: ["Opravy ikony aplikace"]
+                }
+            },
+            "1.0.0": {
+                date: "17.5.2017",
+                items: {
+                    cs: ["Telefon a adresa na detailu hráče"]
+                }
+            },
+            "0.9.5": {
+                date: "24.1.2017",
+                items: {
+                    cs: ["Ikonky hráčů v docházce a v diskuzi", "Místo a odkaz v detailu události, pokud jsou zadané."]
+                }
+            },
+            "0.9.4": {
+                date: "20.1.2017",
+                items: {
+                    cs: ["V seznamu nerozhodnutých uživatelů na události se vypisují pouze Hráči (zadaná docházka Maroda či Člena zobrazena je)"]
+                }
+            },
+            "0.9.3": {
+                date: "11.12.2016",
+                items: {
+                    cs: ["Seznam nerozhodnutých uživatelů na detailu události", "Oprava chyby - už nelze změnit účast na akci po uzávěrce"]
+                }
+            },
+            "0.9.2": {
+                date: "1.11.2016",
+                items: {
+                    cs: ["Oprava chyby - nezobrazování poznámky k účasti v docházce na události"]
+                }
+            },
+            "0.9.1": {
+                date: "18.9.2016",
+                items: {
+                    cs: ["Oprava chyby v Androidu - nabízení akce pro otevření diskuze", "Opravená chyba s názvem aktuálního týmu na Dashboardu při přepnutí týmu"]
+                }
+            },
+            "0.9.0": {
+                date: "15.9.2016",
+                items: {
+                    cs: ["Lze otevírat (do systémového prohlížeče) html odkazy v diskuzi či popisu události", "V docházce na události je účast setříděna dle pohlaví do dvou sloupců", "Aktuálně probíhající událost je viditelná jako budoucí", "Při rozkliknutí účasti na události se dá scrollovat snadno dolů"]
+                }
+            },
+            "0.5.0": {
+                date: "5.6.2016",
+                items: {
+                    cs: ["Vyhledávání v diskuzi", "Příprava pro multijazyčnost v další verzi", "Toast notifikace namísto celoobrazovkových", "Oprava chyby záporných příspěvků po vložení nového příspěvku"]
+                }
+            },
+            "0.4.5": {
+                date: "12.5.2016",
+                items: {
+                    cs: ["Označování nových příspěvků v diskuzi", "Při přepnutí serveru se přehled vyroluje nahoru, aby byly vidět diskuze", "Správný počet nových příspěvků celkem po prvním přihášení"]
+                }
+            },
+            "0.4.3": {
+                date: "19.4.2016",
+                items: {
+                    cs: ["Opravené datum konce události", "Načítání starších příspěvků v diskuzi nekonečným scrollováním", "Menší odsazení a menší font v diskuzi pro úsporu místa"]
+                }
+            },
+            "0.4.2": {
+                date: "16.3.2016",
+                items: {
+                    cs: ["Vylepšený seznam uživatelů, doplněný o index bar"]
+                }
+            },
+            "0.4.1": {
+                date: "15.3.2016",
+                items: {
+                    cs: ["Přehled uživatelů s vyhledáváním"]
+                }
+            },
+            "0.4.0": {
+                date: "3.3.2016",
+                items: {
+                    cs: ["Přepracování ovládání na záložky namísto menu"]
+                }
+            },
+            "0.3.4": {
+                date: "25.2.2016",
+                items: {
+                    cs: ["Beta verze aplikace, určena pro uživatelské testování v rámci frisbee komunity."]
+                }
             }
         }
-    }
-})
+    })
 
-.run(function($ionicPlatform, $localStorage, $rootScope, AppConfig) {
+    .run(function ($ionicPlatform, $localStorage, $rootScope, AppConfig) {
         $rootScope.AppConfig = AppConfig;
         $localStorage.$default({
             servers: []
         });
-        $ionicPlatform.ready(function() {
+        $ionicPlatform.ready(function () {
             if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
                 cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
                 cordova.plugins.Keyboard.disableScroll(true);
@@ -118,7 +142,7 @@ var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'mono
             }
         });
     })
-    .config(function($translateProvider, AppConfig) {
+    .config(function ($translateProvider, AppConfig) {
         $translateProvider.useSanitizeValueStrategy('sanitize');
         $translateProvider.useStaticFilesLoader({
             prefix: "locale-",
@@ -126,12 +150,13 @@ var app = angular.module('tymy.cz', ['ngStorage', 'ngCordova', 'focus-if', 'mono
         });
 
         $translateProvider.preferredLanguage(AppConfig.lang);
+
         $translateProvider.fallbackLanguage(AppConfig.lang);
     })
-    .config(function($ionicFilterBarConfigProvider) {
+    .config(function ($ionicFilterBarConfigProvider) {
         $ionicFilterBarConfigProvider.placeholder('Hledej');
     })
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('start', {
                 url: '/start',
